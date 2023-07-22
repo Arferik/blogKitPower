@@ -1,0 +1,21 @@
+name: nico
+version: 0.0.1
+port: 3000
+log:
+  level: debug
+  path: logs
+  name: nico
+  console: true
+database:
+  type: postgresql
+  host: 127.0.0.1
+  port: 5432
+  user: postgres
+  password: 123456
+  database: balablog
+crypto:
+  pbk: '222'
+  saltKey: qzBra0aKNgqxL6mmCtH7IxJXd9IYjhnb
+jwt:
+  key: qzBra0aKNgqxL6mmCtH7IxJXd9I/diT7+OEgh9eziYk=
+  expired: 3600

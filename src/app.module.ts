@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { CONFIG, ConfigModule } from '@ddboot/config';
 import { LoggerModule } from '@ddboot/log4js';
 import { PrismaModule } from '@ddboot/prisma';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { PrismaModule } from '@ddboot/prisma';
     PrismaModule.forRootAsync({
       inject: [CONFIG],
     }),
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],

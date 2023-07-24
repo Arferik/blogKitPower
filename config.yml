@@ -12,7 +12,7 @@ database:
   port: 5432
   user: postgres
   password: 123456
-  database: balablog
+  database: nico_blog
 crypto:
   pbk: '222'
   saltKey: qzBra0aKNgqxL6mmCtH7IxJXd9IYjhnb

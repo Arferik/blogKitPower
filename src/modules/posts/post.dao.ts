@@ -1,9 +1,21 @@
 import { PaginationParam, PrismaHelper, PrismaService } from '@ddboot/prisma';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Post } from '@prisma/client';
+import {
+  CategoryDTO,
+  PostDTO,
+  PostReleaseDTO,
+  Tag,
+  updateCategoryDTO,
+  updateTagDTO,
+} from './post.dto';
+import { Log4j } from '@ddboot/log4js';
 
 @Injectable()
 export class PostDao {
+  @Log4j()
+  private log: Logger;
+
   constructor(
     private readonly prismaService: PrismaService,
     private readonly prismaHelper: PrismaHelper,
@@ -65,11 +77,12 @@ export class PostDao {
         created_at: true,
         update_at: true,
         is_release: true,
-        cover: {
+        images: {
           select: {
             id: true,
             url: true,
             name: true,
+            type: true,
           },
         },
         Category: {
@@ -91,6 +104,110 @@ export class PostDao {
       },
       where: {
         id: vmId,
+      },
+    });
+  }
+
+  addPost(postDTO: PostDTO) {
+    return this.prismaService.post.create({
+      data: {
+        title: postDTO.title,
+        content: postDTO.content,
+        description: postDTO.description,
+        is_release: postDTO.is_release,
+        Category: {
+          connect: {
+            id: postDTO.category_id,
+          },
+        },
+      },
+      select: {
+        id: true,
+      },
+    });
+  }
+
+  addPostTag(postId: string, tagIds: string[]) {
+    return this.prismaService.postOnTags.createMany({
+      data: tagIds.map((tagId) => {
+        return {
+          post_id: postId,
+          tag_id: tagId,
+        };
+      }),
+    });
+  }
+  /**
+   * 批量更新图片id 和 类型
+   * @param postDTO
+   * @param postId
+   * @returns
+   */
+  updatePostImage(postDTO: PostDTO, postId: string) {
+    const updateImages = postDTO.images.map((image) => {
+      return this.prismaService.image.update({
+        where: {
+          id: image.id,
+        },
+        data: {
+          type: image.type,
+          post_id: postId,
+        },
+      });
+    });
+    return this.prismaService.$transaction(updateImages);
+  }
+
+  releasePost(postDTO: PostReleaseDTO) {
+    return this.prismaService.post.update({
+      where: {
+        id: postDTO.id,
+      },
+      data: {
+        is_release: postDTO.is_release,
+      },
+    });
+  }
+
+  addCategory(category: CategoryDTO) {
+    return this.prismaService.category.create({
+      data: {
+        name: category.name,
+      },
+      select: {
+        id: true,
+      },
+    });
+  }
+
+  addTag(tag: Tag) {
+    return this.prismaService.tag.create({
+      data: {
+        name: tag.name,
+      },
+      select: {
+        id: true,
+      },
+    });
+  }
+
+  updateTag(category: updateTagDTO) {
+    return this.prismaService.tag.update({
+      where: {
+        id: category.id,
+      },
+      data: {
+        name: category.name,
+      },
+    });
+  }
+  updateCategory(category: updateCategoryDTO) {
+    return this.prismaService.category.update({
+      where: {
+        id: category.id,
+      },
+      data: {
+        name: category.name,
       },
     });
   }

@@ -7,6 +7,12 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
+enum ImageType {
+    COVER
+    AVATAR
+    POST
+}
+
 model Post {
     id           String       @id @default(cuid())
     title        String
@@ -17,8 +23,7 @@ model Post {
     PostOnTag    PostOnTags[]
     Category     Category?    @relation(fields: [category_id], references: [id])
     category_id  String?
-    cover        Image?       @relation(fields: [imageId], references: [id])
-    imageId      String?      @map("image_id")
+    images       Image[]
     created_at   DateTime     @unique @default(now())
     update_at    DateTime     @unique @default(now())
 
@@ -26,10 +31,12 @@ model Post {
 }
 
 model Image {
-    id   String @id @default(cuid())
-    name String
-    url  String
-    Post Post[]
+    id      String    @id @default(cuid())
+    name    String
+    url     String
+    type    ImageType @default(POST)
+    Post    Post?     @relation(fields: [post_id], references: [id])
+    post_id String?
 
     @@map("t_nico_image")
 }

@@ -9,4 +9,6 @@ export const ErrorCode = {
   U10003: 'token is expired',
   U10004: 'ssh is not connected',
   U10005: 'ip is not valid',
+
+  P10000: 'post add failed',
 };

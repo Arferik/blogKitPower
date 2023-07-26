@@ -42,21 +42,3 @@ export class PostReleaseDTO {
   @IsBoolean()
   is_release: boolean;
 }
-
-export class CategoryDTO {
-  @IsString()
-  @Length(10, 30)
-  name: string;
-}
-
-export class Tag extends CategoryDTO {}
-
-export class updateCategoryDTO extends CategoryDTO {
-  @IsString()
-  id: string;
-}
-
-export class updateTagDTO extends CategoryDTO {
-  @IsString()
-  id: string;
-}

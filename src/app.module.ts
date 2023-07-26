@@ -6,6 +6,8 @@ import { LoggerModule } from '@ddboot/log4js';
 import { PrismaModule } from '@ddboot/prisma';
 import { UserModule } from './modules/user/user.module';
 import { PostModule } from './modules/posts/post.module';
+import { CategoryModule } from './modules/categories/category.module';
+import { TagModule } from './modules/tags/tag.module';
 
 @Module({
   imports: [
@@ -18,6 +20,8 @@ import { PostModule } from './modules/posts/post.module';
     }),
     UserModule,
     PostModule,
+    CategoryModule,
+    TagModule,
   ],
   controllers: [AppController],
   providers: [AppService],

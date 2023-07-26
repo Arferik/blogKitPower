@@ -1,14 +1,7 @@
 import { PaginationParam, PrismaHelper, PrismaService } from '@ddboot/prisma';
 import { Injectable, Logger } from '@nestjs/common';
 import { Post } from '@prisma/client';
-import {
-  CategoryDTO,
-  PostDTO,
-  PostReleaseDTO,
-  Tag,
-  updateCategoryDTO,
-  updateTagDTO,
-} from './post.dto';
+import { PostDTO, PostReleaseDTO } from './post.dto';
 import { Log4j } from '@ddboot/log4js';
 
 @Injectable()
@@ -165,49 +158,6 @@ export class PostDao {
       },
       data: {
         is_release: postDTO.is_release,
-      },
-    });
-  }
-
-  addCategory(category: CategoryDTO) {
-    return this.prismaService.category.create({
-      data: {
-        name: category.name,
-      },
-      select: {
-        id: true,
-      },
-    });
-  }
-
-  addTag(tag: Tag) {
-    return this.prismaService.tag.create({
-      data: {
-        name: tag.name,
-      },
-      select: {
-        id: true,
-      },
-    });
-  }
-
-  updateTag(category: updateTagDTO) {
-    return this.prismaService.tag.update({
-      where: {
-        id: category.id,
-      },
-      data: {
-        name: category.name,
-      },
-    });
-  }
-  updateCategory(category: updateCategoryDTO) {
-    return this.prismaService.category.update({
-      where: {
-        id: category.id,
-      },
-      data: {
-        name: category.name,
       },
     });
   }

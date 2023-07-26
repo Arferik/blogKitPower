@@ -3,14 +3,7 @@ import { PostDao } from './post.dao';
 import { Injectable } from '@nestjs/common';
 import { QueryParam } from '~/models/queryParam.dto';
 import { concatMap, from, map } from 'rxjs';
-import {
-  CategoryDTO,
-  PostDTO,
-  PostReleaseDTO,
-  Tag,
-  updateCategoryDTO,
-  updateTagDTO,
-} from './post.dto';
+import { PostDTO, PostReleaseDTO } from './post.dto';
 import { BaseException, ErrorCode } from '~/exceptions';
 
 @Injectable()
@@ -86,49 +79,5 @@ export class PostService {
    */
   addImage() {
     throw new Error('Method not implemented.');
-  }
-
-  addCategory(category: CategoryDTO) {
-    this.log.info('begin add category = ', category);
-    return from(this.postDao.addCategory(category)).pipe(
-      map((result) => {
-        return {
-          id: result.id,
-        };
-      }),
-    );
-  }
-
-  addTag(tag: Tag) {
-    this.log.info('begin add tag = ', tag);
-    return from(this.postDao.addTag(tag)).pipe(
-      map((result) => {
-        return {
-          id: result.id,
-        };
-      }),
-    );
-  }
-
-  updateCategory(category: updateCategoryDTO) {
-    this.log.info('begin update category = ', category);
-    return from(this.postDao.updateCategory(category)).pipe(
-      map((result) => {
-        return {
-          id: result.id,
-        };
-      }),
-    );
-  }
-
-  updateTag(category: updateTagDTO) {
-    this.log.info('begin update tag = ', category);
-    return from(this.postDao.updateTag(category)).pipe(
-      map((result) => {
-        return {
-          id: result.id,
-        };
-      }),
-    );
   }
 }

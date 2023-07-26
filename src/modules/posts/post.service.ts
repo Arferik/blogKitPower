@@ -77,7 +77,15 @@ export class PostService {
   /**
    * 提交图片新增地址和名称，此时类别为空
    */
-  addImage() {
-    throw new Error('Method not implemented.');
+  uploadPostImage(fileInfo: { filename: string; path: string }) {
+    this.log.info('upload post image');
+    return from(this.postDao.uploadPostImage(fileInfo)).pipe(
+      map((result) => {
+        return {
+          url: result.url,
+          name: result.name,
+        };
+      }),
+    );
   }
 }

@@ -13,6 +13,8 @@ database:
   user: postgres
   password: 123456
   database: nico_blog
+upload:
+  imageDestPath: public/images
 crypto:
   pbk: '222'
   saltKey: qzBra0aKNgqxL6mmCtH7IxJXd9IYjhnb

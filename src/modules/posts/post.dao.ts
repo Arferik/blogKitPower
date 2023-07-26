@@ -161,4 +161,18 @@ export class PostDao {
       },
     });
   }
+
+  uploadPostImage(fileInfo: { filename: string; path: string }) {
+    return this.prismaService.image.create({
+      data: {
+        name: fileInfo.filename,
+        url: fileInfo.path,
+      },
+      select: {
+        id: true,
+        name: true,
+        url: true,
+      },
+    });
+  }
 }

@@ -5,11 +5,23 @@ import { PostDao } from './post.dao';
 import { MulterModule } from '@nestjs/platform-express';
 import { MulterConfigService } from './multer-config.service';
 import { diskStorage } from 'multer';
+import { JwtModule } from '@nestjs/jwt';
+import { ConfigService } from '@ddboot/log4js';
+import { CONFIG } from '@ddboot/config';
 
 @Module({
   imports: [
     MulterModule.registerAsync({
       useClass: MulterConfigService,
+    }),
+    JwtModule.registerAsync({
+      useFactory: async (configService: ConfigService) => {
+        const secret = configService.get<string>('jwt.key');
+        return {
+          secret,
+        };
+      },
+      inject: [CONFIG],
     }),
     // MulterModule.register({
     //   storage: diskStorage({

@@ -2,7 +2,7 @@ import { IsString, Length } from 'class-validator';
 
 export class CategoryDTO {
   @IsString()
-  @Length(10, 30)
+  @Length(2, 30)
   name: string;
 }
 

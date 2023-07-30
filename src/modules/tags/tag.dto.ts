@@ -1,9 +1,8 @@
-import { Post } from '@prisma/client';
 import { IsString, Length } from 'class-validator';
 
 export class TagDTO {
   @IsString()
-  @Length(10, 30)
+  @Length(2, 30)
   name: string;
 }
 

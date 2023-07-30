@@ -2,12 +2,10 @@ import { Message, Pagination } from '@ddboot/core';
 import {
   Body,
   Controller,
-  FileTypeValidator,
   HttpStatus,
-  MaxFileSizeValidator,
-  ParseFilePipe,
   ParseFilePipeBuilder,
   Post,
+  Get,
   Put,
   Query,
   UploadedFile,
@@ -27,6 +25,7 @@ export class PostController {
   @Message('get post list success')
   @Pagination()
   @UseGuards(AuthGuard)
+  @Get()
   listPost(
     @Query() queryParam: QueryParam,
     @Query('title') hostname: string,

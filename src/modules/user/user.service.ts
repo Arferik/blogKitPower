@@ -29,7 +29,7 @@ export class UserService {
       concatMap((user) => {
         if (!user) {
           this.logger.error('user is not founded');
-          throw new BaseException('U10000', HttpStatus.UNAUTHORIZED);
+          throw new BaseException('U10000');
         }
         return from(comparePbkdf2(password, this.pbkKey, user.password)).pipe(
           map((compareResult) => {

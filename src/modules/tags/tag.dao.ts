@@ -8,7 +8,7 @@ export class TagDAO implements TAGCurl<TagDTO, UpdateTagDTO> {
   constructor(private readonly prismaService: PrismaService) {}
 
   getAll() {
-    return this.prismaService.category.findMany();
+    return this.prismaService.category.findMany({});
   }
   update(t: UpdateTagDTO) {
     return this.prismaService.category.update({

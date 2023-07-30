@@ -8,10 +8,10 @@ export class TagDAO implements TAGCurl<TagDTO, UpdateTagDTO> {
   constructor(private readonly prismaService: PrismaService) {}
 
   getAll() {
-    return this.prismaService.category.findMany({});
+    return this.prismaService.tag.findMany({});
   }
   update(t: UpdateTagDTO) {
-    return this.prismaService.category.update({
+    return this.prismaService.tag.update({
       where: {
         id: t.id,
       },
@@ -24,7 +24,7 @@ export class TagDAO implements TAGCurl<TagDTO, UpdateTagDTO> {
     });
   }
   del({ ids }: { ids: string[] }) {
-    return this.prismaService.category.deleteMany({
+    return this.prismaService.tag.deleteMany({
       where: {
         id: {
           in: ids,
@@ -33,7 +33,7 @@ export class TagDAO implements TAGCurl<TagDTO, UpdateTagDTO> {
     });
   }
   add(t: TagDTO) {
-    return this.prismaService.category.create({
+    return this.prismaService.tag.create({
       data: {
         name: t.name,
       },

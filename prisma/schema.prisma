@@ -25,7 +25,7 @@ model Post {
     category_id  String?
     images       Image[]
     created_at   DateTime     @unique @default(now())
-    update_at    DateTime     @unique @default(now())
+    modified_at  DateTime     @unique @default(now())
 
     @@map("t_nico_post")
 }
@@ -38,6 +38,9 @@ model Image {
     Post    Post?     @relation(fields: [post_id], references: [id])
     post_id String?
 
+    created_at  DateTime @unique @default(now())
+    modified_at DateTime @unique @default(now())
+
     @@map("t_nico_image")
 }
 
@@ -47,6 +50,9 @@ model Config {
     blog_introduce String   @db.Text
     slogan         String?
     socials        Social[]
+
+    created_at  DateTime @unique @default(now())
+    modified_at DateTime @unique @default(now())
 
     @@map("t_nico_config")
 }
@@ -58,6 +64,9 @@ model Social {
     Config   Config? @relation(fields: [configId], references: [id])
     configId String? @map("config_id")
 
+    created_at  DateTime @unique @default(now())
+    modified_at DateTime @unique @default(now())
+
     @@map("t_nico_social")
 }
 
@@ -67,6 +76,9 @@ model Tag {
     icon      String?
     PostOnTag PostOnTags[]
 
+    created_at  DateTime @unique @default(now())
+    modified_at DateTime @unique @default(now())
+
     @@map("t_nico_tag")
 }
 
@@ -75,6 +87,9 @@ model PostOnTags {
     tag_id  String
     post    Post   @relation(fields: [post_id], references: [id])
     tag     Tag    @relation(fields: [tag_id], references: [id])
+
+    created_at  DateTime @unique @default(now())
+    modified_at DateTime @unique @default(now())
 
     @@unique([post_id, tag_id])
     @@map("t_nico_post_on_tag")
@@ -86,6 +101,9 @@ model Category {
     icon String?
     Post Post[]
 
+    created_at  DateTime @unique @default(now())
+    modified_at DateTime @unique @default(now())
+
     @@map("t_nico_category")
 }
 
@@ -93,6 +111,9 @@ model User {
     id       String @id @default(cuid())
     username String @unique
     password String
+
+    created_at  DateTime @unique @default(now())
+    modified_at DateTime @unique @default(now())
 
     @@map("t_nico_user")
 }

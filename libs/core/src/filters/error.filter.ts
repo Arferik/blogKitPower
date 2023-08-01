@@ -35,6 +35,8 @@ export class HttpExceptionFilter extends BaseExceptionFilter {
         ? errorResponse
         : JSON.stringify(errorResponse),
       HttpExceptionFilter.name,
+      'stack = ',
+      errorInfo?.stack || exception.stack,
     );
     const data: any = {
       message: errorMessage,

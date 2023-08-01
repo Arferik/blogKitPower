@@ -4,7 +4,9 @@ export const PrismaUpdateOptionMiddleware = async (params, next) => {
   const { action, args } = params;
   if (action === 'update') {
     const { data } = args || {};
-    data.updated_at = new Date().toISOString();
+    if (data) {
+      data.modified_at = new Date().toISOString();
+    }
   }
   const result = await next(params);
   return result;

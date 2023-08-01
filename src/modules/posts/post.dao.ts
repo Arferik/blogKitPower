@@ -30,7 +30,7 @@ export class PostDao {
         title: true,
         content: true,
         created_at: true,
-        update_at: true,
+        modified_at: true,
         is_release: true,
         Category: {
           select: {
@@ -68,7 +68,7 @@ export class PostDao {
         title: true,
         content: true,
         created_at: true,
-        update_at: true,
+        modified_at: true,
         is_release: true,
         images: {
           select: {
@@ -144,7 +144,11 @@ export class PostDao {
         },
         data: {
           type: image.type,
-          post_id: postId,
+          Post: {
+            connect: {
+              id: postId,
+            },
+          },
         },
       });
     });

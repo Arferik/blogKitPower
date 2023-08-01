@@ -18,17 +18,13 @@ export class PostDTO {
   @IsString()
   content: string;
 
-  @IsArray({
-    each: true,
-  })
+  @IsArray({})
   images: ImageDTO[];
 
   @IsString()
   category_id: string;
 
-  @IsArray({
-    each: true,
-  })
+  @IsArray({})
   tag_ids: string[];
 
   @IsBoolean()

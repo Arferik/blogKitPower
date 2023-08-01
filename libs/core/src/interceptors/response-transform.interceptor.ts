@@ -41,7 +41,7 @@ export class ResponseTransformInterceptor<T>
               pageSize: data.pageSize,
               pageNumber: data.pageNumber,
             }
-          : data;
+          : ({ data } as any);
 
         return {
           message: successMessage || 'successful request',

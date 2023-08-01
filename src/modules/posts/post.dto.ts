@@ -9,7 +9,7 @@ export class ImageDTO {
 
 export class PostDTO {
   @IsString()
-  @Length(10, 30)
+  @Length(1, 30)
   title: string;
 
   @IsString()

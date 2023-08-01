@@ -51,7 +51,7 @@ export class PostController {
   @Post('upload')
   @UseGuards(AuthGuard)
   @Message('upload post image success')
-  @UseInterceptors(FileInterceptor('pic'))
+  @UseInterceptors(FileInterceptor('file'))
   uploadPostImage(
     @UploadedFile(
       new ParseFilePipeBuilder()
@@ -59,7 +59,7 @@ export class PostController {
           fileType: 'image/jpeg',
         })
         .addMaxSizeValidator({
-          maxSize: 1000,
+          maxSize: 3 * 1024 * 1024, //b
         })
         .build({
           errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,

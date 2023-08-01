@@ -19,7 +19,7 @@ export class PostService {
       return from(this.postDao.getPostDetailById(id)).pipe(
         map((item) => {
           return {
-            data: item,
+            data: item || [],
           };
         }),
       );
@@ -84,6 +84,7 @@ export class PostService {
         return {
           url: result.url,
           name: result.name,
+          id: result.id,
         };
       }),
     );

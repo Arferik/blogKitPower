@@ -4,9 +4,10 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
-import { BaseExceptionFilter } from '@nestjs/core';
+import { AbstractHttpAdapter, BaseExceptionFilter } from '@nestjs/core';
 import { isString } from 'lodash';
 import { ExceptionInfo } from '~/interfaces/http-response.interface';
+import { NestLoggerService } from '@ddboot/log4js';
 
 /**
  * 过滤异常 http 请求
@@ -17,6 +18,12 @@ import { ExceptionInfo } from '~/interfaces/http-response.interface';
  */
 @Catch()
 export class HttpExceptionFilter extends BaseExceptionFilter {
+  constructor(
+    httpAdapter: AbstractHttpAdapter<any, any, any>,
+    private log: NestLoggerService,
+  ) {
+    super(httpAdapter);
+  }
   catch(exception: HttpException, host: ArgumentsHost) {
     const request = host.switchToHttp().getRequest();
     const response = host.switchToHttp().getResponse();
@@ -30,14 +37,12 @@ export class HttpExceptionFilter extends BaseExceptionFilter {
       ? errorResponse
       : errorResponse.error_message;
     const errorInfo = isString(errorResponse) ? null : errorResponse.error;
-    console.error(
-      'errorResponse is ' + isString(errorResponse)
-        ? errorResponse
-        : JSON.stringify(errorResponse),
-      HttpExceptionFilter.name,
-      'stack = ',
+    this.log.error(
+      errorMessage,
       errorInfo?.stack || exception.stack,
+      HttpExceptionFilter.name,
     );
+
     const data: any = {
       message: errorMessage,
       code:

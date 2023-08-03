@@ -3,7 +3,6 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { NestLoggerService } from '@ddboot/log4js';
 import {
-  HttpExceptionFilter,
   HttpLoggerInterceptor,
   ResponseTransformInterceptor,
 } from '@ddboot/core';
@@ -28,9 +27,9 @@ async function bootstrap() {
     new HttpLoggerInterceptor(log4jService),
   );
   app.useGlobalFilters(
-    new PrismaClientExceptionFilter(httpAdapter),
-    new BaseErrorExceptionFilter(httpAdapter),
-    new HttpExceptionFilter(httpAdapter),
+    new PrismaClientExceptionFilter(httpAdapter, log4jService),
+    new BaseErrorExceptionFilter(httpAdapter, log4jService),
+    // new HttpExceptionFilter(httpAdapter, log4jService),
   );
   await app.listen(3000);
 }

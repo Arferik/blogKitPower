@@ -1,5 +1,12 @@
 import { Transform } from 'class-transformer';
-import { IsNotEmpty, IsNumber, IsOptional, Max, Min } from 'class-validator';
+import {
+  IsArray,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  Max,
+  Min,
+} from 'class-validator';
 import { unknownToNumber } from '~/transforms/value.transform';
 
 export class QueryParam {
@@ -15,4 +22,9 @@ export class QueryParam {
   @IsOptional()
   @IsNotEmpty()
   pageSize?: number;
+}
+
+export class BatchDeleteDTO {
+  @IsArray()
+  ids: string[];
 }

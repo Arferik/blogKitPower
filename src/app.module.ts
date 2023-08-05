@@ -8,8 +8,7 @@ import { UserModule } from './modules/user/user.module';
 import { PostModule } from './modules/posts/post.module';
 import { CategoryModule } from './modules/categories/category.module';
 import { TagModule } from './modules/tags/tag.module';
-import { APP_FILTER } from '@nestjs/core';
-import { BaseErrorExceptionFilter } from './exceptions';
+import { ImagesModule } from './modules/images/images.module';
 
 @Module({
   imports: [
@@ -24,6 +23,7 @@ import { BaseErrorExceptionFilter } from './exceptions';
     PostModule,
     CategoryModule,
     TagModule,
+    ImagesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

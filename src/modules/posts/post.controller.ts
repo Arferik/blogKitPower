@@ -2,21 +2,16 @@ import { Message, Pagination } from '@ddboot/core';
 import {
   Body,
   Controller,
-  HttpStatus,
-  ParseFilePipeBuilder,
   Post,
   Get,
   Put,
   Query,
-  UploadedFile,
   UseGuards,
-  UseInterceptors,
 } from '@nestjs/common';
 import { PostService } from './post.service';
 import { AuthGuard } from '~/guard/auth.guard';
 import { QueryParam } from '~/models/queryParam.dto';
 import { PostDTO, PostReleaseDTO } from './post.dto';
-import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('post')
 export class PostController {
@@ -46,27 +41,5 @@ export class PostController {
   @Message('release post success')
   releasePost(@Body() postRelease: PostReleaseDTO) {
     return this.postService.releasePost(postRelease);
-  }
-
-  @Post('upload')
-  @UseGuards(AuthGuard)
-  @Message('upload post image success')
-  @UseInterceptors(FileInterceptor('file'))
-  uploadPostImage(
-    @UploadedFile(
-      new ParseFilePipeBuilder()
-        .addFileTypeValidator({
-          fileType: 'image/jpeg',
-        })
-        .addMaxSizeValidator({
-          maxSize: 3 * 1024 * 1024, //b
-        })
-        .build({
-          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-        }),
-    )
-    file: Express.Multer.File,
-  ) {
-    return this.postService.uploadPostImage(file);
   }
 }

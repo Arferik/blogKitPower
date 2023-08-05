@@ -23,8 +23,8 @@ export class BaseErrorExceptionFilter extends BaseExceptionFilter {
       const message = ErrorCode[exception.message];
       const status = HttpStatus.BAD_REQUEST;
       this.log.error(
-        'Error Message is [ ' + message + ' ] \n',
-        'Detail [ ' + exception.stack + ' ] \n',
+        '\n Message -' + message + ' \n',
+        'Detail - ' + exception.stack + ' \n',
         BaseErrorExceptionFilter.name,
       );
       return response.status(status).json({

@@ -11,4 +11,6 @@ export const ErrorCode = {
   U10005: 'ip is not valid',
 
   P10000: 'post add failed',
+  P10001: 'post update failed',
+  P10002: 'post delete failed',
 };

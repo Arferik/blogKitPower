@@ -29,12 +29,10 @@ export class UserController {
 
   @Get('current')
   @UseGuards(AuthGuard)
-  getCurrent(@Req() request: Request, @Res() res: Response) {
+  getCurrent(@Req() request: Request) {
     const user = request['user'];
-    res.json({
+    return {
       username: user.username,
-      code: '0000',
-      message: 'get user success',
-    });
+    };
   }
 }

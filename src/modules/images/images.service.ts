@@ -2,9 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { ImageDAO } from './images.dao';
 import { QueryParam } from '~/models/queryParam.dto';
 import { Log4j, Logger } from '@ddboot/log4js';
-import { catchError, concatMap, from, map } from 'rxjs';
+import { catchError, concatMap, from, map, of } from 'rxjs';
 import { unlink } from 'fs/promises';
-import { BaseException, ErrorCode } from '~/exceptions';
 
 @Injectable()
 export class ImagesService {
@@ -62,8 +61,8 @@ export class ImagesService {
         return from(unlink(url));
       }),
       catchError((err) => {
-        this.log.error('remove image error, the error = ', err);
-        throw new BaseException(ErrorCode.P10002);
+        this.log.warn('remove image error, the error = ', err);
+        return of({});
       }),
       concatMap(() => {
         this.log.info(

@@ -2,7 +2,7 @@ import { Log4j, Logger } from '@ddboot/log4js';
 import { PostDao } from './post.dao';
 import { Injectable } from '@nestjs/common';
 import { BatchDeleteDTO, QueryParam } from '~/models/queryParam.dto';
-import { concatMap, from, map } from 'rxjs';
+import { concatMap, from, map, of } from 'rxjs';
 import { PostDTO, PostReleaseDTO } from './post.dto';
 import { BaseException, ErrorCode } from '~/exceptions';
 
@@ -50,6 +50,11 @@ export class PostService {
         this.log.info('add post success, then add post on tag');
         return from(this.postDao.addPostTag(postId, postDTO.tag_ids)).pipe(
           concatMap(() => {
+            const postImage = postDTO.images.filter((item) => item.id);
+            if (postImage.length === 0) {
+              this.log.info('add post on tag success, but no image');
+              return of({});
+            }
             this.log.info('add post on tag success, then update image info');
             return from(this.postDao.updatePostImage(postDTO, postId));
           }),

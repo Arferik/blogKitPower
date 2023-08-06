@@ -7,10 +7,11 @@ import {
   Put,
   Query,
   UseGuards,
+  Delete,
 } from '@nestjs/common';
 import { PostService } from './post.service';
 import { AuthGuard } from '~/guard/auth.guard';
-import { QueryParam } from '~/models/queryParam.dto';
+import { BatchDeleteDTO, QueryParam } from '~/models/queryParam.dto';
 import { PostDTO, PostReleaseDTO } from './post.dto';
 
 @Controller('post')
@@ -41,5 +42,12 @@ export class PostController {
   @Message('release post success')
   releasePost(@Body() postRelease: PostReleaseDTO) {
     return this.postService.releasePost(postRelease);
+  }
+
+  @Delete()
+  @UseGuards(AuthGuard)
+  @Message('delete post success')
+  del(@Body() delId: BatchDeleteDTO) {
+    return this.postService.del(delId);
   }
 }

@@ -165,4 +165,23 @@ export class PostDao {
       },
     });
   }
+
+  del(delId: string[]) {
+    return this.prismaService.$transaction([
+      this.prismaService.postOnTags.deleteMany({
+        where: {
+          post_id: {
+            in: delId,
+          },
+        },
+      }),
+      this.prismaService.post.deleteMany({
+        where: {
+          id: {
+            in: delId,
+          },
+        },
+      }),
+    ]);
+  }
 }

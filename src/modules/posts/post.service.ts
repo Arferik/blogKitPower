@@ -1,7 +1,7 @@
 import { Log4j, Logger } from '@ddboot/log4js';
 import { PostDao } from './post.dao';
 import { Injectable } from '@nestjs/common';
-import { QueryParam } from '~/models/queryParam.dto';
+import { BatchDeleteDTO, QueryParam } from '~/models/queryParam.dto';
 import { concatMap, from, map } from 'rxjs';
 import { PostDTO, PostReleaseDTO } from './post.dto';
 import { BaseException, ErrorCode } from '~/exceptions';
@@ -70,6 +70,16 @@ export class PostService {
         return {
           id: postDTO.id,
         };
+      }),
+    );
+  }
+
+  del(batchDel: BatchDeleteDTO) {
+    this.log.info('begin to delete post');
+    this.log.info('the delete ids = ', batchDel.ids);
+    return from(this.postDao.del(batchDel.ids)).pipe(
+      map(() => {
+        return {};
       }),
     );
   }

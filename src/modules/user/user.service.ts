@@ -4,7 +4,7 @@ import { UserDao } from '~/modules/user/user.dao';
 import { concatMap, from, map } from 'rxjs';
 import { Value } from '@ddboot/config';
 import { comparePbkdf2, getPbkdf2 } from '@ddboot/core';
-import { BaseException } from '~/exceptions';
+import { BaseException, ErrorCode } from '~/exceptions';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
@@ -29,13 +29,16 @@ export class UserService {
       concatMap((user) => {
         if (!user) {
           this.logger.error('user is not founded');
-          throw new BaseException('U10000');
+          throw new BaseException(ErrorCode.U10000);
         }
         return from(comparePbkdf2(password, this.pbkKey, user.password)).pipe(
           map((compareResult) => {
             if (!compareResult) {
               this.logger.error('password is wrong');
-              throw new BaseException('U10001', HttpStatus.UNAUTHORIZED);
+              throw new BaseException(
+                ErrorCode.U10001,
+                HttpStatus.UNAUTHORIZED,
+              );
             }
             this.logger.info('sign to access token');
             return this.jwtService.sign(

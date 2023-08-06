@@ -1,17 +1,9 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Post,
-  Req,
-  Res,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { UserService } from '~/modules/user/user.service';
 import { UserDto } from '~/modules/user/user.dto';
 import { Message } from '@ddboot/core';
 import { AuthGuard } from '~/guard/auth.guard';
-import { Request, Response } from 'express';
+import { Request } from 'express';
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}

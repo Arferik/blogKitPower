@@ -22,7 +22,7 @@ export class ImagesService {
           data,
           total: count,
           current: queryParam.current,
-          pageSize: queryParam.pageSize,
+          pageSize: queryParam.page_size,
         };
       }),
     );

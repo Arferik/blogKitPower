@@ -21,7 +21,7 @@ export class QueryParam {
   @Transform(({ value }) => unknownToNumber(value))
   @IsOptional()
   @IsNotEmpty()
-  pageSize?: number;
+  page_size?: number;
 }
 
 export class BatchDeleteDTO {

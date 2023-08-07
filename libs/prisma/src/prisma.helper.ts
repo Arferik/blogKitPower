@@ -22,7 +22,7 @@ export class PrismaHelper {
     }
     if (updatedAt) {
       return {
-        updated_at: sortMap[updatedAt] as never,
+        modified_at: sortMap[updatedAt] as never,
       };
     }
     return {};
@@ -33,14 +33,14 @@ export class PrismaHelper {
     skip?: number;
     orderBy?: OrderBy;
   } {
-    const { current, pageSize, createAt, updatedAt } = params;
-    if (!current || !pageSize) {
+    const { current, page_size, created_at, modified_at } = params;
+    if (!current || !page_size) {
       return {};
     }
     const pageNum = current || 1;
     //默认20
-    const take = pageSize || 20;
-    const orderBy = this.getOrderBy(createAt, updatedAt);
+    const take = page_size || 20;
+    const orderBy = this.getOrderBy(created_at, modified_at);
     if (!isEmpty(orderBy)) {
       return {
         take: Number(take),

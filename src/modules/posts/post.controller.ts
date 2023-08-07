@@ -24,10 +24,10 @@ export class PostController {
   @Get()
   listPost(
     @Query() queryParam: QueryParam,
-    @Query('title') hostname: string,
+    @Query('title') postTitle: string,
     @Query('id') id: string,
   ) {
-    return this.postService.listPost(queryParam, hostname, id);
+    return this.postService.listPost(queryParam, postTitle, id);
   }
 
   @Post()

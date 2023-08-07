@@ -1,8 +1,8 @@
 import { PaginationParam, PrismaHelper, PrismaService } from '@ddboot/prisma';
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Post } from '@prisma/client';
 import { PostDTO, PostReleaseDTO } from './post.dto';
-import { Log4j } from '@ddboot/log4js';
+import { Log4j, Logger } from '@ddboot/log4js';
 
 @Injectable()
 export class PostDao {
@@ -23,6 +23,7 @@ export class PostDao {
   listPost(pagination: PaginationParam, keyWord?: string) {
     const containName = this.prismaHelper.likeQuery<Post>(keyWord, 'title');
     const pageParams = this.prismaHelper.paginationParams(pagination);
+    this.log.debug('call listPost ,pageParams', pageParams);
     const data = this.prismaService.post.findMany({
       ...pageParams,
       select: {

@@ -9,13 +9,13 @@ export interface DBOption {
 }
 
 export type OrderBy = {
-  updated_at?: never;
+  modified_at?: never;
   created_at?: never;
 };
 
 export type PaginationParam = {
   current?: number;
-  pageSize?: number;
-  createAt?: string;
-  updatedAt?: string;
+  page_size?: number;
+  created_at?: string;
+  modified_at?: string;
 };

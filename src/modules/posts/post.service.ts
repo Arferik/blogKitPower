@@ -31,7 +31,7 @@ export class PostService {
           data,
           total: count,
           current: queryParam.current,
-          pageSize: queryParam.pageSize,
+          pageSize: queryParam.page_size,
         };
       }),
     );
@@ -47,7 +47,6 @@ export class PostService {
           throw new BaseException(ErrorCode.P10000);
         }
         const postId = result.id;
-        this.log.info('add post success, then add post on tag');
         return from(this.postDao.addPostTag(postId, postDTO.tag_ids)).pipe(
           concatMap(() => {
             const postImage = postDTO.images.filter((item) => item.id);

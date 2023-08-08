@@ -47,7 +47,7 @@ export class PrismaService
     const performanceMiddleware = PrismaPerformanceLogMiddleware(this.LOG);
     this.$use(PrismaUpdateOptionMiddleware);
     this.$use(performanceMiddleware);
-    this.$on('query', this.toLogger);
+    this.$on('query', ({ query }) => this.toLogger({ query }));
   }
 
   async enableShutdownHooks(app: INestApplication) {

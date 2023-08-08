@@ -34,6 +34,7 @@ model Image {
     id      String    @id @default(cuid())
     name    String
     url     String
+    path    String
     type    ImageType @default(POST)
     Post    Post?     @relation(fields: [post_id], references: [id])
     post_id String?

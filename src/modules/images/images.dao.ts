@@ -1,9 +1,13 @@
+import { Value } from '@ddboot/config';
 import { PaginationParam, PrismaHelper, PrismaService } from '@ddboot/prisma';
 import { Injectable } from '@nestjs/common';
 import { Image } from '@prisma/client';
 
 @Injectable()
 export class ImageDAO {
+  @Value('assets.img.server_prefix')
+  private readonly serverPrefix: string;
+
   constructor(
     private readonly prismaService: PrismaService,
     private readonly prismaHelper: PrismaHelper,
@@ -41,10 +45,12 @@ export class ImageDAO {
   }
 
   uploadImage(fileInfo: { filename: string; path: string }) {
+    const imgUrl = `${this.serverPrefix}/${fileInfo.filename}`;
     return this.prismaService.image.create({
       data: {
         name: fileInfo.filename,
-        url: fileInfo.path,
+        url: imgUrl,
+        path: fileInfo.path,
       },
       select: {
         id: true,
@@ -68,7 +74,7 @@ export class ImageDAO {
         id,
       },
       select: {
-        url: true,
+        path: true,
       },
     });
   }

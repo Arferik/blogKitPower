@@ -56,9 +56,9 @@ export class ImagesService {
   removeImage(id: string) {
     this.log.info('remove image');
     return from(this.imageDAO.getImagePathById(id)).pipe(
-      concatMap(({ url }) => {
-        this.log.info('begin remove image from disk, the image path = ', url);
-        return from(unlink(url));
+      concatMap(({ path }) => {
+        this.log.info('begin remove image from disk, the image path = ', path);
+        return from(unlink(path));
       }),
       catchError((err) => {
         this.log.warn('remove image error, the error = ', err);

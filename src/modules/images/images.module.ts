@@ -21,13 +21,16 @@ import { ImageDAO } from './images.dao';
     }),
     MulterModule.registerAsync({
       useFactory(config: ConfigService, logger: ILogger) {
-        const uploadFileConfig = config.get<string>('upload.imageDestPath');
-        logger
-          .getLogger('uploadConfig')
-          .info('upload File Config =', uploadFileConfig);
+        const uploadFile = config.get<string>('assets.base');
+        const uploadFileImg = config.get<string>('assets.img.path');
+        const fullPath = join(uploadFile, uploadFileImg);
+        logger.getLogger('uploadConfig').info('upload File Config =', fullPath);
         return {
+          limits: {
+            fileSize: 3 * 1024 * 1024, // 3M
+          },
           storage: diskStorage({
-            destination: join(uploadFileConfig),
+            destination: fullPath,
             filename: (_, file, callback) => {
               const fileName = `${
                 new Date().getTime() + extname(file.originalname)

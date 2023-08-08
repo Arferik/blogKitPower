@@ -4,7 +4,7 @@ port: 3000
 log:
   level: debug
   path: logs
-  name: nico
+  name: Nico
   console: true
 database:
   type: postgresql
@@ -13,8 +13,11 @@ database:
   user: postgres
   password: 123456
   database: nico_blog
-upload:
-  imageDestPath: public/images
+assets:
+  base: public
+  img:
+    path: images
+    server_prefix: 'http://127.0.0.1:3000/images'
 crypto:
   pbk: '222'
   saltKey: qzBra0aKNgqxL6mmCtH7IxJXd9IYjhnb

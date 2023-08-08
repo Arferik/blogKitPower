@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { CONFIG, ConfigModule } from '@ddboot/config';
+import { CONFIG, ConfigModule, ConfigService } from '@ddboot/config';
 import { LoggerModule } from '@ddboot/log4js';
 import { PrismaModule } from '@ddboot/prisma';
 import { UserModule } from './modules/user/user.module';
@@ -9,6 +9,7 @@ import { PostModule } from './modules/posts/post.module';
 import { CategoryModule } from './modules/categories/category.module';
 import { TagModule } from './modules/tags/tag.module';
 import { ImagesModule } from './modules/images/images.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
 
 @Module({
   imports: [
@@ -24,6 +25,16 @@ import { ImagesModule } from './modules/images/images.module';
     CategoryModule,
     TagModule,
     ImagesModule,
+    ServeStaticModule.forRootAsync({
+      inject: [CONFIG],
+      useFactory(config: ConfigService) {
+        return [
+          {
+            rootPath: config.get<string>('assets.base'),
+          },
+        ];
+      },
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],

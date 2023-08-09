@@ -12,7 +12,7 @@ import {
 import { PostService } from './post.service';
 import { AuthGuard } from '~/guard/auth.guard';
 import { BatchDeleteDTO, QueryParam } from '~/models/queryParam.dto';
-import { PostDTO, PostReleaseDTO } from './post.dto';
+import { PostDTO, PostReleaseDTO, UpdatePostDTO } from './post.dto';
 
 @Controller('post')
 export class PostController {
@@ -35,6 +35,13 @@ export class PostController {
   @Message('add post success')
   addPost(@Body() postDTO: PostDTO) {
     return this.postService.addPost(postDTO);
+  }
+
+  @Put()
+  @UseGuards(AuthGuard)
+  @Message('update post success')
+  update(@Body() postDTO: UpdatePostDTO) {
+    return this.postService.updatePost(postDTO);
   }
 
   @Put('release')

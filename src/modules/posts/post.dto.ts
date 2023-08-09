@@ -1,4 +1,5 @@
 import { IsArray, IsBoolean, IsEnum, IsString, Length } from 'class-validator';
+import { extend } from 'lodash';
 
 export class ImageDTO {
   @IsString()
@@ -29,6 +30,11 @@ export class PostDTO {
 
   @IsBoolean()
   is_release: boolean;
+}
+
+export class UpdatePostDTO extends PostDTO {
+  @IsString()
+  id: string;
 }
 
 export class PostReleaseDTO {

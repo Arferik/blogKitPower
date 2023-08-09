@@ -1,7 +1,7 @@
 import { PaginationParam, PrismaHelper, PrismaService } from '@ddboot/prisma';
 import { Injectable } from '@nestjs/common';
 import { Post } from '@prisma/client';
-import { PostDTO, PostReleaseDTO } from './post.dto';
+import { PostDTO, PostReleaseDTO, UpdatePostDTO } from './post.dto';
 import { Log4j, Logger } from '@ddboot/log4js';
 
 @Injectable()
@@ -33,13 +33,22 @@ export class PostDao {
         created_at: true,
         modified_at: true,
         is_release: true,
-        Category: {
+        description: true,
+        images: {
+          select: {
+            id: true,
+            url: true,
+            name: true,
+            type: true,
+          },
+        },
+        category: {
           select: {
             id: true,
             name: true,
           },
         },
-        PostOnTag: {
+        tags: {
           select: {
             tag: {
               select: {
@@ -71,6 +80,7 @@ export class PostDao {
         created_at: true,
         modified_at: true,
         is_release: true,
+        description: true,
         images: {
           select: {
             id: true,
@@ -79,13 +89,13 @@ export class PostDao {
             type: true,
           },
         },
-        Category: {
+        category: {
           select: {
             id: true,
             name: true,
           },
         },
-        PostOnTag: {
+        tags: {
           select: {
             tag: {
               select: {
@@ -109,7 +119,7 @@ export class PostDao {
         content: postDTO.content,
         description: postDTO.description,
         is_release: postDTO.is_release,
-        Category: {
+        category: {
           connect: {
             id: postDTO.category_id,
           },
@@ -184,5 +194,23 @@ export class PostDao {
         },
       }),
     ]);
+  }
+
+  updatePost(post: UpdatePostDTO) {
+    return this.prismaService.post.update({
+      where: {
+        id: post.id,
+      },
+      data: {
+        title: post.title,
+        content: post.content,
+        description: post.description,
+        category: {
+          connect: {
+            id: post.category_id,
+          },
+        },
+      },
+    });
   }
 }

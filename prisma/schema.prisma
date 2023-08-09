@@ -20,8 +20,8 @@ model Post {
     is_release   Boolean      @default(false)
     content      String       @db.Text
     release_date DateTime?    @default(now())
-    PostOnTag    PostOnTags[]
-    Category     Category?    @relation(fields: [category_id], references: [id])
+    tags         PostOnTags[]
+    category     Category?    @relation(fields: [category_id], references: [id])
     category_id  String?
     images       Image[]
     created_at   DateTime     @default(now())
@@ -72,10 +72,10 @@ model Social {
 }
 
 model Tag {
-    id        String       @id @default(cuid())
-    name      String
-    icon      String?
-    PostOnTag PostOnTags[]
+    id    String       @id @default(cuid())
+    name  String
+    icon  String?
+    posts PostOnTags[]
 
     created_at  DateTime @default(now())
     modified_at DateTime @default(now())
@@ -97,10 +97,10 @@ model PostOnTags {
 }
 
 model Category {
-    id   String  @id @default(cuid())
-    name String
-    icon String?
-    Post Post[]
+    id    String  @id @default(cuid())
+    name  String
+    icon  String?
+    posts Post[]
 
     created_at  DateTime @default(now())
     modified_at DateTime @default(now())

@@ -3,7 +3,7 @@ import { PostDao } from './post.dao';
 import { Injectable } from '@nestjs/common';
 import { BatchDeleteDTO, QueryParam } from '~/models/queryParam.dto';
 import { concatMap, from, map, of } from 'rxjs';
-import { PostDTO, PostReleaseDTO } from './post.dto';
+import { PostDTO, PostReleaseDTO, UpdatePostDTO } from './post.dto';
 import { BaseException, ErrorCode } from '~/exceptions';
 
 @Injectable()
@@ -84,6 +84,23 @@ export class PostService {
     return from(this.postDao.del(batchDel.ids)).pipe(
       map(() => {
         return {};
+      }),
+    );
+  }
+  /**
+   * TODO:
+   *   更新博客基本信息
+   *   更新博客标签
+   *
+   *
+   *
+   */
+  updatePost(postDTO: UpdatePostDTO) {
+    return from(this.postDao.updatePost(postDTO)).pipe(
+      map(() => {
+        return {
+          id: postDTO.id,
+        };
       }),
     );
   }

@@ -2,7 +2,7 @@ import { Log4j, Logger } from '@ddboot/log4js';
 import { PostDao } from './post.dao';
 import { Injectable } from '@nestjs/common';
 import { BatchDeleteDTO, QueryParam } from '~/models/queryParam.dto';
-import { concatMap, from, map, of } from 'rxjs';
+import { catchError, concatMap, from, map, of } from 'rxjs';
 import { PostDTO, PostReleaseDTO, UpdatePostDTO } from './post.dto';
 import { BaseException, ErrorCode } from '~/exceptions';
 
@@ -88,20 +88,56 @@ export class PostService {
     );
   }
   /**
-   * TODO:
    *   更新博客基本信息
    *   更新博客标签
-   *
+   *   博客类别
+   *   图片
    *
    *
    */
   updatePost(postDTO: UpdatePostDTO) {
+    return this.updateBaseInfo(postDTO).pipe(
+      concatMap(() => this.updatePostTag(postDTO)),
+      concatMap(() =>
+        this.updatePostImage(postDTO).pipe(
+          catchError((e) => {
+            this.log.error('update post image failed', e);
+            return of({
+              id: postDTO.id,
+            });
+          }),
+        ),
+      ),
+      map(() => ({
+        id: postDTO.id,
+      })),
+    );
+  }
+
+  updateBaseInfo(postDTO: UpdatePostDTO) {
+    this.log.info('begin to update post base info');
     return from(this.postDao.updatePost(postDTO)).pipe(
       map(() => {
+        this.log.info('end update post base info success');
         return {
           id: postDTO.id,
         };
       }),
     );
+  }
+
+  updatePostTag(postDTO: UpdatePostDTO) {
+    this.log.info('begin to update post tag');
+    return from(this.postDao.delPostTagByPostId(postDTO.id)).pipe(
+      concatMap(() => {
+        this.log.info('delete post tag success, then add post tag');
+        return from(this.postDao.addPostTag(postDTO.id, postDTO.tag_ids));
+      }),
+    );
+  }
+
+  updatePostImage(postDTO: UpdatePostDTO) {
+    this.log.info('begin to update post image');
+    return from(this.postDao.updatePostImage(postDTO, postDTO.id));
   }
 }

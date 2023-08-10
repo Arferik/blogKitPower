@@ -141,6 +141,15 @@ export class PostDao {
       }),
     });
   }
+
+  delPostTagByPostId(postId: string) {
+    return this.prismaService.postOnTags.deleteMany({
+      where: {
+        post_id: postId,
+      },
+    });
+  }
+
   /**
    * 批量更新图片id 和 类型
    * @param postDTO

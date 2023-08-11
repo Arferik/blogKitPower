@@ -214,6 +214,7 @@ export class PostDao {
         title: post.title,
         content: post.content,
         description: post.description,
+        is_release: post.is_release,
         category: {
           connect: {
             id: post.category_id,

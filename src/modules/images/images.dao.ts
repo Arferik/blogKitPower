@@ -31,6 +31,11 @@ export class ImageDAO {
         modified_at: true,
         post_id: true,
         type: true,
+        Post: {
+          select: {
+            title: true,
+          },
+        },
       },
       where: {
         ...containName,

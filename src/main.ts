@@ -2,15 +2,13 @@ import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { NestLoggerService } from '@ddboot/log4js';
-import {
-  HttpLoggerInterceptor,
-  ResponseTransformInterceptor,
-} from '@ddboot/core';
 import { PrismaClientExceptionFilter } from '@ddboot/prisma';
 import { BaseErrorExceptionFilter, BaseException } from './exceptions';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    bufferLogs: true,
+  });
   const { httpAdapter } = app.get(HttpAdapterHost);
   const log4jService = app.get(NestLoggerService);
   app.useLogger(log4jService);
@@ -21,10 +19,6 @@ async function bootstrap() {
         throw new BaseException('T10000');
       },
     }),
-  );
-  app.useGlobalInterceptors(
-    new ResponseTransformInterceptor(),
-    new HttpLoggerInterceptor(log4jService),
   );
   app.useGlobalFilters(
     new PrismaClientExceptionFilter(httpAdapter, log4jService),

@@ -27,12 +27,6 @@
       "@ddboot/prisma/*": [
         "libs/prisma/src/*"
       ],
-      "@ddboot/core": [
-        "libs/core/src"
-      ],
-      "@ddboot/core/*": [
-        "libs/core/src/*"
-      ]
     }
   }
 }

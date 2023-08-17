@@ -10,10 +10,15 @@ import { CategoryModule } from './modules/categories/category.module';
 import { TagModule } from './modules/tags/tag.module';
 import { ImagesModule } from './modules/images/images.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import {
+  HttpLoggerInterceptor,
+  ResponseTransformInterceptor,
+} from '@ddboot/core';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({}),
+    ConfigModule.forRoot(),
     LoggerModule.forRootAsync({
       inject: [CONFIG],
     }),
@@ -37,6 +42,16 @@ import { ServeStaticModule } from '@nestjs/serve-static';
     }),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: HttpLoggerInterceptor,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ResponseTransformInterceptor,
+    },
+  ],
 })
 export class AppModule {}

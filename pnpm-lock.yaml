@@ -6,11 +6,14 @@ settings:
 
 dependencies:
   '@ddboot/config':
-    specifier: ^1.1.2
-    version: 1.1.2(@nestjs/common@10.0.0)(lodash@4.17.21)(reflect-metadata@0.1.13)(rxjs@7.8.1)(yaml@2.3.1)
+    specifier: ^1.2.1
+    version: 1.2.1(@nestjs/common@10.0.0)(lodash@4.17.21)(reflect-metadata@0.1.13)(rxjs@7.8.1)(yaml@2.3.1)
+  '@ddboot/core':
+    specifier: ^1.0.0
+    version: 1.0.0(@ddboot/log4js@1.1.3)(@nestjs/common@10.0.0)(log4js@6.9.1)(reflect-metadata@0.1.13)(rxjs@7.8.1)
   '@ddboot/log4js':
-    specifier: ^1.1.2
-    version: 1.1.2(@nestjs/common@10.0.0)(log4js@6.9.1)(reflect-metadata@0.1.13)(rxjs@7.8.1)
+    specifier: ^1.1.3
+    version: 1.1.3(@nestjs/common@10.0.0)(log4js@6.9.1)(reflect-metadata@0.1.13)(rxjs@7.8.1)
   '@nestjs/common':
     specifier: ^10.0.0
     version: 10.0.0(class-transformer@0.5.1)(class-validator@0.14.0)(reflect-metadata@0.1.13)(rxjs@7.8.1)
@@ -533,8 +536,8 @@ packages:
       '@jridgewell/trace-mapping': 0.3.9
     dev: true
 
-  /@ddboot/config@1.1.2(@nestjs/common@10.0.0)(lodash@4.17.21)(reflect-metadata@0.1.13)(rxjs@7.8.1)(yaml@2.3.1):
-    resolution: {integrity: sha512-rneCktyWrwfTmtfJQbQELKNTYrK6SEl0wA228YJ7iyv7Sa2g6E4izJPYtd8nOhWvb/D9hB97ONnVtUH3vDcbYQ==}
+  /@ddboot/config@1.2.1(@nestjs/common@10.0.0)(lodash@4.17.21)(reflect-metadata@0.1.13)(rxjs@7.8.1)(yaml@2.3.1):
+    resolution: {integrity: sha512-JODC7/Uxh0BQbCSvf3ZS1gYgggUJdp8p7YXgWCKUsmaig6izswQ72BmTGFUylSSO8oj/9OJ1SJa5y7ZML5MmDg==}
     peerDependencies:
       '@nestjs/common': ^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0
       lodash: ^4.17.21
@@ -549,8 +552,25 @@ packages:
       yaml: 2.3.1
     dev: false
 
-  /@ddboot/log4js@1.1.2(@nestjs/common@10.0.0)(log4js@6.9.1)(reflect-metadata@0.1.13)(rxjs@7.8.1):
-    resolution: {integrity: sha512-S14SOF4m8NDmGpuDlMlfwPIPKt0PPKWJfF3Xh1vySmg2XQWdc/eku6vTVjiywWQgabUFCQ3KPA9bsitMUmWvyQ==}
+  /@ddboot/core@1.0.0(@ddboot/log4js@1.1.3)(@nestjs/common@10.0.0)(log4js@6.9.1)(reflect-metadata@0.1.13)(rxjs@7.8.1):
+    resolution: {integrity: sha512-FdKIpbLw9xE4nRbglaXFf9udzYcREU7LARahzrLBcVIatppYAWC7jc+mPxx65Rbhno0lZ9e6WuUN5axutmtWFg==}
+    peerDependencies:
+      '@ddboot/log4js': ^1.0.0 || ^2.0.0
+      '@nestjs/common': ^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0
+      log4js: ^6.8.0
+      reflect-metadata: ^0.1.12
+      rxjs: ^6.0.0 || ^7.0.0
+    dependencies:
+      '@ddboot/log4js': 1.1.3(@nestjs/common@10.0.0)(log4js@6.9.1)(reflect-metadata@0.1.13)(rxjs@7.8.1)
+      '@nestjs/common': 10.0.0(class-transformer@0.5.1)(class-validator@0.14.0)(reflect-metadata@0.1.13)(rxjs@7.8.1)
+      lodash: 4.17.21
+      log4js: 6.9.1
+      reflect-metadata: 0.1.13
+      rxjs: 7.8.1
+    dev: false
+
+  /@ddboot/log4js@1.1.3(@nestjs/common@10.0.0)(log4js@6.9.1)(reflect-metadata@0.1.13)(rxjs@7.8.1):
+    resolution: {integrity: sha512-HG7jW5cIvIZ6CA/KUPcGKqu2vCbj7RYujzIafPrQFSaltiwkU+nm9kzQH8Sq3Foc8I15DBVXz2fXlKh3/81ycg==}
     peerDependencies:
       '@nestjs/common': ^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0
       log4js: ^6.8.0
@@ -1924,6 +1944,17 @@ packages:
       fill-range: 7.0.1
     dev: true
 
+  /browserslist@4.21.10:
+    resolution: {integrity: sha512-bipEBdZfVH5/pwrvqc+Ub0kUPVfGUhlKxbvfD+z1BDnPEO/X98ruXGA1WP5ASpAFKan7Qr6j736IacbZQuAlKQ==}
+    engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
+    hasBin: true
+    dependencies:
+      caniuse-lite: 1.0.30001521
+      electron-to-chromium: 1.4.492
+      node-releases: 2.0.13
+      update-browserslist-db: 1.0.11(browserslist@4.21.10)
+    dev: true
+
   /browserslist@4.21.9:
     resolution: {integrity: sha512-M0MFoZzbUrRU4KNfCrDLnvyE7gub+peetoTid3TBIqtunaDJyXlwhakT+/VkvSXcfIzFfK/nkCs4nmyTmxdNSg==}
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
@@ -1995,6 +2026,10 @@ packages:
 
   /caniuse-lite@1.0.30001517:
     resolution: {integrity: sha512-Vdhm5S11DaFVLlyiKu4hiUTkpZu+y1KA/rZZqVQfOD5YdDT/eQKlkt7NaE0WGOFgX32diqt9MiP9CAiFeRklaA==}
+    dev: true
+
+  /caniuse-lite@1.0.30001521:
+    resolution: {integrity: sha512-fnx1grfpEOvDGH+V17eccmNjucGUnCbP6KL+l5KqBIerp26WK/+RQ7CIDE37KGJjaPyqWXXlFUyKiWmvdNNKmQ==}
     dev: true
 
   /chalk@2.4.2:
@@ -2344,6 +2379,10 @@ packages:
 
   /electron-to-chromium@1.4.468:
     resolution: {integrity: sha512-6M1qyhaJOt7rQtNti1lBA0GwclPH+oKCmsra/hkcWs5INLxfXXD/dtdnaKUYQu/pjOBP/8Osoe4mAcNvvzoFag==}
+    dev: true
+
+  /electron-to-chromium@1.4.492:
+    resolution: {integrity: sha512-36K9b/6skMVwAIEsC7GiQ8I8N3soCALVSHqWHzNDtGemAcI9Xu8hP02cywWM0A794rTHm0b0zHPeLJHtgFVamQ==}
     dev: true
 
   /emittery@0.13.1:
@@ -5042,6 +5081,17 @@ packages:
     resolution: {integrity: sha512-pjy2bYhSsufwWlKwPc+l3cN7+wuJlK6uz0YdJEOlQDbl6jo/YlPi4mb8agUkVC8BF7V8NuzeyPNqRksA3hztKQ==}
     engines: {node: '>= 0.8'}
 
+  /update-browserslist-db@1.0.11(browserslist@4.21.10):
+    resolution: {integrity: sha512-dCwEFf0/oT85M1fHBg4F0jtLwJrutGoHSQXCh7u4o2t1drG+c0a9Flnqww6XUKSfQMPpJBRjU8d4RXB09qtvaA==}
+    hasBin: true
+    peerDependencies:
+      browserslist: '>= 4.21.0'
+    dependencies:
+      browserslist: 4.21.10
+      escalade: 3.1.1
+      picocolors: 1.0.0
+    dev: true
+
   /update-browserslist-db@1.0.11(browserslist@4.21.9):
     resolution: {integrity: sha512-dCwEFf0/oT85M1fHBg4F0jtLwJrutGoHSQXCh7u4o2t1drG+c0a9Flnqww6XUKSfQMPpJBRjU8d4RXB09qtvaA==}
     hasBin: true
@@ -5177,7 +5227,7 @@ packages:
       '@webassemblyjs/wasm-parser': 1.11.6
       acorn: 8.10.0
       acorn-import-assertions: 1.9.0(acorn@8.10.0)
-      browserslist: 4.21.9
+      browserslist: 4.21.10
       chrome-trace-event: 1.0.3
       enhanced-resolve: 5.15.0
       es-module-lexer: 1.3.0

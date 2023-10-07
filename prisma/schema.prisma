@@ -27,7 +27,7 @@ model Post {
     created_at   DateTime     @default(now())
     modified_at  DateTime     @default(now())
 
-    @@map("t_nico_post")
+    @@map("t_blog_post")
 }
 
 model Image {
@@ -42,7 +42,7 @@ model Image {
     created_at  DateTime @default(now())
     modified_at DateTime @default(now())
 
-    @@map("t_nico_image")
+    @@map("t_common_image")
 }
 
 model Config {
@@ -55,7 +55,7 @@ model Config {
     created_at  DateTime @default(now())
     modified_at DateTime @default(now())
 
-    @@map("t_nico_config")
+    @@map("t_blog_config")
 }
 
 model Social {
@@ -68,7 +68,7 @@ model Social {
     created_at  DateTime @default(now())
     modified_at DateTime @default(now())
 
-    @@map("t_nico_social")
+    @@map("t_blog_social")
 }
 
 model Tag {
@@ -80,7 +80,7 @@ model Tag {
     created_at  DateTime @default(now())
     modified_at DateTime @default(now())
 
-    @@map("t_nico_tag")
+    @@map("t_blog_tag")
 }
 
 model PostOnTags {
@@ -93,7 +93,7 @@ model PostOnTags {
     modified_at DateTime @default(now())
 
     @@unique([post_id, tag_id])
-    @@map("t_nico_post_on_tag")
+    @@map("t_blog_post_on_tag")
 }
 
 model Category {
@@ -105,16 +105,146 @@ model Category {
     created_at  DateTime @default(now())
     modified_at DateTime @default(now())
 
-    @@map("t_nico_category")
+    @@map("t_blog_category")
 }
 
-model User {
-    id       String @id @default(cuid())
-    username String @unique
-    password String
+// oauth2 table list
+model OAuthClientDetails {
+    client_id               String  @id @default(cuid())
+    resource_ids            String  @default("")
+    client_secret           String  @default("")
+    //客户端申请的权限范围,可选值包括read,write,trust;若有多个权限范围用逗号(,)分隔
+    scope                   String  @default("")
+    authorized_grant_types  String  @default("")
+    web_server_redirect_uri String  @default("")
+    //客户端所拥有的Spring Security的权限值,可选, 若有多个权限值,用逗号(,)分隔
+    authorities             String  @default("")
+    access_token_validity   Int     @default(1800)
+    refresh_token_validity  Int     @default(604800)
+    //这是一个预留的字段,在Oauth的流程中没有实际的使用,可选,但若设置值,必须是JSON格式的数据
+    additional_information  Json
+    is_locked               Boolean @default(false)
+
+    //设置用户是否自动Approval操作, 默认值为 'false', 可选值包括 'true','false', 'read','write'.
+    //该字段只适用于grant_type="authorization_code"的情况,当用户登录成功后,若该值为'true'或支持的scope值,则会跳过用户Approve的页面, 直接授权.
+    //该字段与 trusted 有类似的功能, 是 spring-security-oauth2 的 2.0 版本后添加的新属性.
+    auto_approve Boolean  @default(false)
+    created_at   DateTime @default(now())
+    modified_at  DateTime @default(now())
+
+    OAuthTerminal  OAuthTerminal[]
+    OAuthToken     OAuthToken[]
+    OAuthApprovals OAuthApprovals[]
+
+    @@map("t_oauth_client_details")
+}
+
+model OAuthTerminal {
+    id                             String              @id @default(cuid())
+    is_locked                      Boolean             @default(false)
+    name                           String?             @default("")
+    type                           String?             @default("")
+    engine                         String?             @default("")
+    os                             String?             @default("")
+    is_online                      Boolean?            @default(false)
+    users                          UserOnTerminal[]
+    OAuthClientDetails             OAuthClientDetails? @relation(fields: [oauth_client_details_client_id], references: [client_id])
+    oauth_client_details_client_id String?
+
+    @@map("t_oauth_terminal")
+}
+
+model OAuthToken {
+    id String @id @default(cuid())
+
+    //Token标识：通过MD5加密access_token的值
+    token_id          String
+    //OAuth2AccessToken.java对象序列化内容
+    token             String @default("")
+    // 用户名，若客户端没有用户名则该值等于client_id
+    username          String @default("")
+    //根据当前的username、client_id与scope通过MD5加密生成该字段的值
+    authentication_id String
+    //OAuth2Authentication.java对象序列化内容
+    authentication    String @db.Text
+    //RefreshToken标识：通过MD5加密refresh_token的值
+    refresh_token     String @db.Text
 
     created_at  DateTime @default(now())
     modified_at DateTime @default(now())
 
-    @@map("t_nico_user")
+    //认证授权客户端ID
+    client_id                      String              @default("")
+    OAuthClientDetails             OAuthClientDetails? @relation(fields: [oauth_client_details_client_id], references: [client_id])
+    oauth_client_details_client_id String?
+
+    @@map("t_oauth_token")
+}
+
+model OAuthApprovals {
+    id         String   @id @default(cuid())
+    user_id    String   @default("")
+    client_id  String   @default("")
+    scope      String   @default("")
+    status     String   @default("")
+    code       String   @unique
+    expires_at DateTime @default(now())
+
+    created_at                  DateTime            @default(now())
+    modified_at                 DateTime            @default(now())
+    OAuthClientDetails          OAuthClientDetails? @relation(fields: [oAuthClientDetailsClient_id], references: [client_id])
+    oAuthClientDetailsClient_id String?
+
+    @@map("t_oauth_approvals")
+}
+
+model clientDetails {
+    id                     String @id @default(cuid())
+    app_id                 String @default(uuid())
+    client_id              String @default("")
+    resource_ids           String @default("")
+    app_secret             String @default("")
+    scope                  String @default("")
+    grant_types            String @default("")
+    redirect_url           String @default("")
+    authorities            String @default("")
+    access_token_validity  Int    @default(1800)
+    refresh_token_validity Int    @default(604800)
+    additional_information String @default("")
+    auto_approve_scope     String @default("")
+
+    created_at  DateTime @default(now())
+    modified_at DateTime @default(now())
+
+    @@map("t_oauth_custom_client_details")
+}
+
+model User {
+    id         String           @id @default(cuid())
+    username   String           @unique @default("")
+    password   String           @default("")
+    enable     Boolean          @default(false)
+    is_locked  Boolean          @default(false)
+    email      String?          @unique @default("")
+    email_code String?
+    terminals  UserOnTerminal[]
+
+    created_at  DateTime @default(now())
+    modified_at DateTime @default(now())
+
+    @@map("t_oauth_user")
+}
+
+model UserOnTerminal {
+    user_id     String
+    terminal_id String
+
+    user          User          @relation(fields: [user_id], references: [id])
+    oAuthTerminal OAuthTerminal @relation(fields: [terminal_id], references: [id])
+
+    created_at  DateTime @default(now())
+    modified_at DateTime @default(now())
+
+    @@id([user_id, terminal_id])
+    @@map("t_oauth_link_user_on_terminal")
 }

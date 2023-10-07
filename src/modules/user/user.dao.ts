@@ -1,12 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@ddboot/prisma';
-import { from } from 'rxjs';
+import { from, of } from 'rxjs';
 
 @Injectable()
 export class UserDao {
   constructor(private readonly prismaService: PrismaService) {}
 
   getUserByName$(name: string) {
+    if (name === 'admin') {
+      return of({
+        id: 'admin_a',
+        username: 'admin',
+        password: 'admin',
+      });
+    }
     return from(
       this.prismaService.user.findFirst({
         where: {

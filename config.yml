@@ -24,3 +24,6 @@ crypto:
 jwt:
   key: qzBra0aKNgqxL6mmCtH7IxJXd9I/diT7+OEgh9eziYk=
   expired: 3600
+redis:
+  host: 127.0.0.1
+  port: 6379

@@ -1,45 +1,40 @@
-import { Log4j, Logger } from '@ddboot/log4js';
 import { Injectable } from '@nestjs/common';
 import {
-  Client,
-  ClientCredentialsModel,
-  Falsey,
-  Token,
-  User,
+  Request as OAURequest,
+  Response as OAUResponse,
+  TokenOptions,
 } from '@node-oauth/oauth2-server';
+import { OAuthModel } from './oauth.model';
+import { Request, Response } from 'express';
+import * as OAuth2Server from '@node-oauth/oauth2-server';
 
 @Injectable()
-export class OAuthService implements ClientCredentialsModel {
-  @Log4j()
-  private log: Logger;
+export class OAuthService extends OAuth2Server {
+  constructor(oauthModel: OAuthModel) {
+    super({
+      model: oauthModel,
+      allowExtendedTokenAttributes: true,
+    });
+  }
 
-  getUserFromClient(client: Client): Promise<User | Falsey> {
-    throw new Error('Method not implemented.');
-  }
-  validateScope?(
-    user: User,
-    client: Client,
-    scope: string[],
-  ): Promise<string[] | Falsey> {
-    throw new Error('Method not implemented.');
-  }
-  generateAccessToken?(
-    client: Client,
-    user: User,
-    scope: string[],
-  ): Promise<string> {
-    throw new Error('Method not implemented.');
-  }
-  getClient(clientId: string, clientSecret: string): Promise<Client | Falsey> {
-    throw new Error('Method not implemented.');
-  }
-  saveToken(token: Token, client: Client, user: User): Promise<Falsey | Token> {
-    throw new Error('Method not implemented.');
-  }
-  getAccessToken(accessToken: string): Promise<Falsey | Token> {
-    throw new Error('Method not implemented.');
-  }
-  verifyScope?(token: Token, scope: string[]): Promise<boolean> {
-    throw new Error('Method not implemented.');
+  async oauthToken(
+    request: Request,
+    response: Response,
+    options?: TokenOptions,
+  ) {
+    const token = await this.token(
+      new OAURequest(request),
+      new OAUResponse(response),
+      options,
+    );
+    return response
+      .json({
+        access_token: token.accessToken,
+        token_type: token.tokenType,
+        expires_in: token.accessTokenExpiresAt,
+        refresh_token: token.refreshToken,
+        scope: token.scope,
+      })
+      .status(200);
   }
 }

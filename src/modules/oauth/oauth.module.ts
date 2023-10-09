@@ -20,5 +20,6 @@ import { CONFIG, ConfigService } from '@ddboot/config';
   ],
   controllers: [OAuthController],
   providers: [OAuthService, OAuthDAO, OAuthModel],
+  exports: [OAuthService],
 })
 export class OAuthModule {}

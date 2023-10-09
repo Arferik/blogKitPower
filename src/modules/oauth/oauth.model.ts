@@ -40,12 +40,18 @@ export class OAuthModel implements ClientCredentialsModel {
       userId: 'client_credentials_userId',
     };
   }
-  async validateScope?(
+  async validateScope(
     user: User,
     client: Client,
     scope: string[],
   ): Promise<Falsey | string[]> {
-    throw new Error('Method not implemented.');
+    const checkResult = scope.every(
+      (evScope) => client.scopes.indexOf(evScope) >= 0,
+    );
+    if (!checkResult) {
+      return false;
+    }
+    return scope;
   }
   async generateAccessToken(
     client: Client,

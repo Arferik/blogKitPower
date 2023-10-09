@@ -33,7 +33,6 @@ export class OAuthService extends OAuth2Server {
         token_type: token.tokenType,
         expires_in: token.accessTokenExpiresAt,
         refresh_token: token.refreshToken,
-        scope: token.scope,
       })
       .status(200);
   }

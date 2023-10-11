@@ -1,14 +1,35 @@
-export class ClientDTO {
-  client_id;
-  resource_ids;
-  client_secret;
-  scopes;
-  authorized_grant_types;
-  web_server_redirect_uri;
+import { IsArray, IsNumber, IsString } from 'class-validator';
 
-  access_token_validity;
-  refresh_token_validity;
-  //这是一个预留的字段,在Oauth的流程中没有实际的使用,可选,但若设置值,必须是JSON格式的数据
-  additional_information;
-  is_locked;
+export class ClientRegisterDTO {
+  @IsString()
+  name: string;
+  @IsString()
+  type: string;
+  @IsString()
+  engine: string;
+  @IsString()
+  os: string;
+  client_id?: string;
+  @IsString()
+  scopes?: string;
+  @IsString()
+  authorized_grant_types: string;
+  @IsString()
+  web_server_redirect_uri: string;
+  @IsNumber()
+  access_token_validity?: number;
+  @IsNumber()
+  refresh_token_validity?: number;
+
+  client_secret?: string;
+}
+
+export class UpdateAllClientDTO extends ClientRegisterDTO {
+  @IsString()
+  id: string;
+}
+
+export class BatchDeleteDTO {
+  @IsArray()
+  ids: string[];
 }

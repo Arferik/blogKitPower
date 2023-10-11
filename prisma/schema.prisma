@@ -150,6 +150,9 @@ model OAuthTerminal {
     OAuthClientDetails             OAuthClientDetails? @relation(fields: [oauth_client_details_client_id], references: [client_id])
     oauth_client_details_client_id String?
 
+    created_at  DateTime @default(now())
+    modified_at DateTime @default(now())
+
     @@map("t_oauth_terminal")
 }
 

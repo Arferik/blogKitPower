@@ -19,8 +19,7 @@ export class ClientDAO {
       data: {
         name: client.name,
         type: client.type,
-        engine: client.engine,
-        os: client.os,
+        description: client.description,
         OAuthClientDetails: {
           create: {
             client_id: client.client_id,
@@ -50,8 +49,6 @@ export class ClientDAO {
       data: {
         name: client.name,
         type: client.type,
-        engine: client.engine,
-        os: client.os,
         OAuthClientDetails: {
           connect: {
             client_id: client.client_id,

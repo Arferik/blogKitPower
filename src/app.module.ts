@@ -18,6 +18,7 @@ import {
   ResponseTransformInterceptor,
 } from '@ddboot/core';
 import { OAuthModule } from './modules/oauth/oauth.module';
+import { ClientModule } from './modules/client/client.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { OAuthModule } from './modules/oauth/oauth.module';
       inject: [CONFIG],
     }),
     OAuthModule,
+    ClientModule,
     CacheModule.register({
       isGlobal: true,
     }),

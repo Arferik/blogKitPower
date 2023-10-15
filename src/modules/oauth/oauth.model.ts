@@ -5,6 +5,7 @@ import {
   Client,
   ClientCredentialsModel,
   Falsey,
+  PasswordModel,
   Token,
   User,
 } from '@node-oauth/oauth2-server';
@@ -16,7 +17,7 @@ import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { md5, randomUUID } from '@ddboot/core';
 
 @Injectable()
-export class OAuthModel implements ClientCredentialsModel {
+export class OAuthModel implements ClientCredentialsModel, PasswordModel {
   @Log4j()
   private log: Logger;
 
@@ -158,5 +159,16 @@ export class OAuthModel implements ClientCredentialsModel {
       scope,
     );
     return scope.every((s) => token.scope.indexOf(s) >= 0);
+  }
+
+  generateRefreshToken?(
+    client: Client,
+    user: User,
+    scope: string[],
+  ): Promise<string> {
+    throw new Error('Method not implemented.');
+  }
+  getUser(username: string, password: string): Promise<User | Falsey> {
+    throw new Error('Method not implemented.');
   }
 }

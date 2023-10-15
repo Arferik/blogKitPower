@@ -146,6 +146,7 @@ model OAuthTerminal {
     engine                         String?             @default("")
     os                             String?             @default("")
     is_online                      Boolean?            @default(false)
+    description                    String?             @default("")
     users                          UserOnTerminal[]
     OAuthClientDetails             OAuthClientDetails? @relation(fields: [oauth_client_details_client_id], references: [client_id])
     oauth_client_details_client_id String?

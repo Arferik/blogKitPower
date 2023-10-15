@@ -1,18 +1,23 @@
-import { IsArray, IsNumber, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Length,
+} from 'class-validator';
 
 export class ClientRegisterDTO {
   @IsString()
+  @Length(2, 30)
   name: string;
-  @IsString()
   type: string;
-  @IsString()
-  engine: string;
-  @IsString()
-  os: string;
   client_id?: string;
   @IsString()
-  scopes?: string;
+  @IsOptional()
+  description?: string;
   @IsString()
+  scopes?: string;
+  @IsArray()
   authorized_grant_types: string;
   @IsString()
   web_server_redirect_uri: string;

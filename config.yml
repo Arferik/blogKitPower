@@ -19,7 +19,7 @@ assets:
     path: images
     server_prefix: 'http://127.0.0.1:3000/images'
 crypto:
-  pbk: '222'
+  pbk: qzBra0aKNgqxL6mmCtH7IxJXd9IYjhnb
   saltKey: qzBra0aKNgqxL6mmCtH7IxJXd9IYjhnb
 jwt:
   key: qzBra0aKNgqxL6mmCtH7IxJXd9I/diT7+OEgh9eziYk=

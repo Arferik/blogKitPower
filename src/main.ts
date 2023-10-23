@@ -4,6 +4,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestLoggerService } from '@ddboot/log4js';
 import { PrismaClientExceptionFilter } from '@ddboot/prisma';
 import { BaseErrorExceptionFilter, BaseException } from './exceptions';
+import { OAuthErrorExceptionFilter } from './exceptions/oauthError.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -23,6 +24,7 @@ async function bootstrap() {
   app.useGlobalFilters(
     new PrismaClientExceptionFilter(httpAdapter, log4jService),
     new BaseErrorExceptionFilter(httpAdapter, log4jService),
+    new OAuthErrorExceptionFilter(httpAdapter, log4jService),
     // new HttpExceptionFilter(httpAdapter, log4jService),
   );
   await app.listen(3000);

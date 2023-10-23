@@ -24,9 +24,9 @@ export class ClientController {
 
   @Post()
   @Message('register client success')
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   register(@Body() client: ClientRegisterDTO) {
-    return this.clientService.register(client);
+    return this.clientService.addClient(client);
   }
 
   @Put()

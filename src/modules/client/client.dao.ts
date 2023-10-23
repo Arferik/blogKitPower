@@ -2,7 +2,7 @@ import { PaginationParam, PrismaHelper, PrismaService } from '@ddboot/prisma';
 import { Injectable } from '@nestjs/common';
 import { ClientRegisterDTO, UpdateAllClientDTO } from './client.dto';
 import { Log4j, Logger } from '@ddboot/log4js';
-import { OAuthTerminal } from '@prisma/client';
+import { OAuthClientScope, OAuthTerminal } from '@prisma/client';
 
 @Injectable()
 export class ClientDAO {
@@ -24,7 +24,6 @@ export class ClientDAO {
           create: {
             client_id: client.client_id,
             client_secret: client.client_secret,
-            scopes: client.scopes,
             additional_information: '',
             authorized_grant_types: client.authorized_grant_types,
             web_server_redirect_uri: client.web_server_redirect_uri,
@@ -44,6 +43,35 @@ export class ClientDAO {
     });
   }
 
+  addClientScope(clientScope: Pick<OAuthClientScope, 'scope'>) {
+    return this.prismaService.oAuthClientScope.create({
+      data: {
+        ...clientScope,
+      },
+      select: {
+        id: true,
+      },
+    });
+  }
+
+  updateClientScope(clientId: string, scopeIds: string[]) {
+    const updateMap = scopeIds.map((scopeId) => {
+      return this.prismaService.oAuthClientScope.update({
+        data: {
+          OAuthClientDetails: {
+            connect: {
+              client_id: clientId,
+            },
+          },
+        },
+        where: {
+          id: scopeId,
+        },
+      });
+    });
+    return this.prismaService.$transaction(updateMap);
+  }
+
   updateClient(client: UpdateAllClientDTO) {
     return this.prismaService.oAuthTerminal.update({
       data: {
@@ -52,7 +80,6 @@ export class ClientDAO {
         OAuthClientDetails: {
           connect: {
             client_id: client.client_id,
-            scopes: client.scopes,
             authorized_grant_types: client.authorized_grant_types,
             web_server_redirect_uri: client.web_server_redirect_uri,
             access_token_validity: client.access_token_validity,

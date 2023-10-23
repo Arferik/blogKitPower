@@ -16,17 +16,19 @@ export class ClientRegisterDTO {
   @IsOptional()
   description?: string;
   @IsString()
-  scopes?: string;
-  @IsArray()
   authorized_grant_types: string;
   @IsString()
+  @IsOptional()
   web_server_redirect_uri: string;
   @IsNumber()
+  @IsOptional()
   access_token_validity?: number;
   @IsNumber()
+  @IsOptional()
   refresh_token_validity?: number;
-
   client_secret?: string;
+  @IsArray()
+  scopes: string[];
 }
 
 export class UpdateAllClientDTO extends ClientRegisterDTO {

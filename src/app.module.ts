@@ -9,7 +9,6 @@ import { PostModule } from './modules/posts/post.module';
 import { CategoryModule } from './modules/categories/category.module';
 import { TagModule } from './modules/tags/tag.module';
 import { ImagesModule } from './modules/images/images.module';
-import { ServeStaticModule } from '@nestjs/serve-static';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { CacheModule } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-yet';
@@ -41,7 +40,7 @@ import { ClientModule } from './modules/client/client.module';
         if (!config.get<string>('redis.host')) {
           logger
             .getLogger(CacheModule.name)
-            .info('redis host is not configed, use memory store');
+            .info('redis host is not config, use memory store');
           return {
             store: 'memory',
             isGlobal: true,
@@ -63,16 +62,6 @@ import { ClientModule } from './modules/client/client.module';
     CategoryModule,
     TagModule,
     ImagesModule,
-    ServeStaticModule.forRootAsync({
-      inject: [CONFIG],
-      useFactory(config: ConfigService) {
-        return [
-          {
-            rootPath: config.get<string>('assets.base'),
-          },
-        ];
-      },
-    }),
   ],
   controllers: [AppController],
   providers: [

@@ -18,25 +18,39 @@ export class ClientService {
 
   constructor(private readonly clientDAO: ClientDAO) {}
 
-  register(client: ClientRegisterDTO) {
+  addClientScope(scopeName: string) {
+    return from(
+      this.clientDAO.addClientScope({
+        scope: scopeName,
+      }),
+    );
+  }
+
+  addClient(client: ClientRegisterDTO) {
     this.logger.info('begin to register client');
     return of(client).pipe(
       concatMap((item) => {
         return from(Pbkdf2.Key(client.name + randomUUID(), randomUUID())).pipe(
           map((clientSecret) => {
-            item.client_secret = clientSecret;
+            item.client_secret = `ClientSecure_${clientSecret}`;
             return item;
           }),
         );
       }),
       concatMap((item) => {
         return from(this.clientDAO.addClient(item)).pipe(
-          map((result) => {
-            this.logger.info('end to register client success');
-            return {
-              client_id: result.OAuthClientDetails.client_id,
-              client_secret: result.OAuthClientDetails.client_secret,
-            };
+          concatMap((result) => {
+            return from(
+              this.clientDAO.updateClientScope(
+                result.OAuthClientDetails.client_id,
+                client.scopes,
+              ),
+            ).pipe(
+              map(() => ({
+                client_id: result.OAuthClientDetails.client_id,
+                client_secret: result.OAuthClientDetails.client_secret,
+              })),
+            );
           }),
         );
       }),

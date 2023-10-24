@@ -18,6 +18,11 @@ export class ClientService {
 
   constructor(private readonly clientDAO: ClientDAO) {}
 
+  /**
+   *  添加客户端授权范围
+   * @param scopeName
+   * @returns
+   */
   addClientScope(scopeName: string) {
     return from(
       this.clientDAO.addClientScope({
@@ -43,7 +48,7 @@ export class ClientService {
             return from(
               this.clientDAO.updateClientScope(
                 result.OAuthClientDetails.client_id,
-                client.scopes,
+                client.scope_ids,
               ),
             ).pipe(
               map(() => ({

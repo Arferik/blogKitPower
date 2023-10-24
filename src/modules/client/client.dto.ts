@@ -28,7 +28,7 @@ export class ClientRegisterDTO {
   refresh_token_validity?: number;
   client_secret?: string;
   @IsArray()
-  scopes: string[];
+  scope_ids: string[];
 }
 
 export class UpdateAllClientDTO extends ClientRegisterDTO {
@@ -39,4 +39,9 @@ export class UpdateAllClientDTO extends ClientRegisterDTO {
 export class BatchDeleteDTO {
   @IsArray()
   ids: string[];
+}
+
+export class ScopeDTO {
+  @IsString()
+  name: string;
 }

@@ -11,6 +11,7 @@ import {
 import {
   BatchDeleteDTO,
   ClientRegisterDTO,
+  ScopeDTO,
   UpdateAllClientDTO,
 } from './client.dto';
 import { AuthGuard } from '~/guard/auth.guard';
@@ -25,8 +26,15 @@ export class ClientController {
   @Post()
   @Message('register client success')
   // @UseGuards(AuthGuard)
-  register(@Body() client: ClientRegisterDTO) {
+  addClient(@Body() client: ClientRegisterDTO) {
     return this.clientService.addClient(client);
+  }
+
+  @Post('scope')
+  @Message('add client scope success')
+  // @UseGuards(AuthGuard)
+  addClientScope(@Body() scope: ScopeDTO) {
+    return this.clientService.addClientScope(scope.name);
   }
 
   @Put()

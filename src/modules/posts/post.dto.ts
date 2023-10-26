@@ -1,5 +1,4 @@
 import { IsArray, IsBoolean, IsEnum, IsString, Length } from 'class-validator';
-import { extend } from 'lodash';
 
 export class ImageDTO {
   @IsString()

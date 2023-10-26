@@ -61,6 +61,7 @@ export class ClientService {
       }),
     );
   }
+
   update(client: UpdateAllClientDTO) {
     this.logger.info('begin to register client');
     return from(this.clientDAO.updateClient(client)).pipe(
@@ -73,7 +74,7 @@ export class ClientService {
     );
   }
 
-  list(queryParam: QueryParam, keyWord: string, id?: string) {
+  listClient(queryParam: QueryParam, keyWord: string, id?: string) {
     this.logger.info('begin to query list client ');
     if (id) {
       this.logger.info('[listPost]  id = ', id);

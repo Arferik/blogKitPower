@@ -53,7 +53,7 @@ export class ClientController {
     @Query('title') postTitle: string,
     @Query('id') id: string,
   ) {
-    return this.clientService.list(queryParam, postTitle, id);
+    return this.clientService.listClient(queryParam, postTitle, id);
   }
 
   @Delete()

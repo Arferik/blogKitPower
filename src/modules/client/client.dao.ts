@@ -55,21 +55,12 @@ export class ClientDAO {
   }
 
   updateClientScope(clientId: string, scopeIds: string[]) {
-    const updateMap = scopeIds.map((scopeId) => {
-      return this.prismaService.oAuthClientScope.update({
-        data: {
-          OAuthClientDetails: {
-            connect: {
-              client_id: clientId,
-            },
-          },
-        },
-        where: {
-          id: scopeId,
-        },
-      });
+    return this.prismaService.oAuthClientOnScope.createMany({
+      data: scopeIds.map((scopeId) => ({
+        client_id: clientId,
+        scope_id: scopeId,
+      })),
     });
-    return this.prismaService.$transaction(updateMap);
   }
 
   updateClient(client: UpdateAllClientDTO) {
@@ -159,12 +150,20 @@ export class ClientDAO {
   }
 
   del(delId: string[]) {
-    return this.prismaService.oAuthTerminal.deleteMany({
+    const batchResult = this.prismaService.oAuthClientOnScope.deleteMany({
       where: {
-        id: {
+        client_id: {
           in: delId,
         },
       },
     });
+    const batchResultClient = this.prismaService.oAuthClientDetails.deleteMany({
+      where: {
+        client_id: {
+          in: delId,
+        },
+      },
+    });
+    return this.prismaService.$transaction([batchResult, batchResultClient]);
   }
 }

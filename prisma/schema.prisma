@@ -109,14 +109,26 @@ model Category {
 }
 
 model OAuthClientScope {
-    id                             String              @id @default(cuid())
-    scope                          String              @unique @default("")
-    created_at                     DateTime            @default(now())
-    modified_at                    DateTime            @default(now())
-    OAuthClientDetails             OAuthClientDetails? @relation(fields: [oauth_client_details_client_id], references: [client_id])
-    oauth_client_details_client_id String?
+    id                 String               @id @default(cuid())
+    scope              String               @unique @default("")
+    created_at         DateTime             @default(now())
+    modified_at        DateTime             @default(now())
+    OAuthClientDetails OAuthClientOnScope[]
 
     @@map("t_oauth_client_scope")
+}
+
+model OAuthClientOnScope {
+    client_id String
+    scope_id  String
+    client    OAuthClientDetails @relation(fields: [client_id], references: [client_id])
+    scope     OAuthClientScope   @relation(fields: [scope_id], references: [id])
+
+    created_at  DateTime @default(now())
+    modified_at DateTime @default(now())
+
+    @@id([client_id, scope_id])
+    @@map("t_oauth_client_on_scope")
 }
 
 // oauth2 table list
@@ -135,10 +147,10 @@ model OAuthClientDetails {
     //设置用户是否自动Approval操作, 默认值为 'false', 可选值包括 'true','false', 'read','write'.
     //该字段只适用于grant_type="authorization_code"的情况,当用户登录成功后,若该值为'true'或支持的scope值,则会跳过用户Approve的页面, 直接授权.
     //该字段与 trusted 有类似的功能, 是 spring-security-oauth2 的 2.0 版本后添加的新属性.
-    auto_approve   Boolean            @default(false)
-    created_at     DateTime           @default(now())
-    modified_at    DateTime           @default(now())
-    scopes         OAuthClientScope[]
+    auto_approve   Boolean              @default(false)
+    created_at     DateTime             @default(now())
+    modified_at    DateTime             @default(now())
+    scopes         OAuthClientOnScope[]
     OAuthTerminal  OAuthTerminal[]
     OAuthToken     OAuthToken[]
     OAuthApprovals OAuthApprovals[]

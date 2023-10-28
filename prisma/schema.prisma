@@ -133,27 +133,23 @@ model OAuthClientOnScope {
 
 // oauth2 table list
 model OAuthClientDetails {
-    client_id               String  @id @default(cuid())
-    resource_ids            String  @default("")
-    client_secret           String  @default("")
-    authorized_grant_types  String  @default("")
-    web_server_redirect_uri String  @default("")
-    access_token_validity   Int     @default(1800)
-    refresh_token_validity  Int     @default(604800)
-    //这是一个预留的字段,在Oauth的流程中没有实际的使用,可选,但若设置值,必须是JSON格式的数据
+    client_id               String               @id @default(cuid())
+    client_name             String               @default("")
+    resource_ids            String               @default("")
+    client_secret           String               @default("")
+    authorized_grant_types  String               @default("")
+    web_server_redirect_uri String               @default("")
+    access_token_validity   Int                  @default(1800)
+    refresh_token_validity  Int                  @default(604800)
     additional_information  Json
-    is_locked               Boolean @default(false)
-
-    //设置用户是否自动Approval操作, 默认值为 'false', 可选值包括 'true','false', 'read','write'.
-    //该字段只适用于grant_type="authorization_code"的情况,当用户登录成功后,若该值为'true'或支持的scope值,则会跳过用户Approve的页面, 直接授权.
-    //该字段与 trusted 有类似的功能, 是 spring-security-oauth2 的 2.0 版本后添加的新属性.
-    auto_approve   Boolean              @default(false)
-    created_at     DateTime             @default(now())
-    modified_at    DateTime             @default(now())
-    scopes         OAuthClientOnScope[]
-    OAuthTerminal  OAuthTerminal[]
-    OAuthToken     OAuthToken[]
-    OAuthApprovals OAuthApprovals[]
+    is_locked               Boolean              @default(false)
+    auto_approve            Boolean              @default(false)
+    created_at              DateTime             @default(now())
+    modified_at             DateTime             @default(now())
+    scopes                  OAuthClientOnScope[]
+    OAuthTerminal           OAuthTerminal[]
+    OAuthToken              OAuthToken[]
+    OAuthApprovals          OAuthApprovals[]
 
     @@map("t_oauth_client_details")
 }
@@ -166,7 +162,6 @@ model OAuthTerminal {
     engine                         String?             @default("")
     os                             String?             @default("")
     is_online                      Boolean?            @default(false)
-    description                    String?             @default("")
     users                          UserOnTerminal[]
     OAuthClientDetails             OAuthClientDetails? @relation(fields: [oauth_client_details_client_id], references: [client_id])
     oauth_client_details_client_id String?

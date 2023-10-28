@@ -31,11 +31,24 @@ export class ClientService {
     );
   }
 
+  listScope(clientId: string) {
+    if (clientId) {
+      return from(this.clientDAO.getScopeByIds(clientId)).pipe(
+        map((item) => {
+          return item.map((ev) => ev.scope_id);
+        }),
+      );
+    }
+    return from(this.clientDAO.listScope());
+  }
+
   addClient(client: ClientRegisterDTO) {
     this.logger.info('begin to register client');
     return of(client).pipe(
       concatMap((item) => {
-        return from(Pbkdf2.Key(client.name + randomUUID(), randomUUID())).pipe(
+        return from(
+          Pbkdf2.Key(client.client_name + randomUUID(), randomUUID()),
+        ).pipe(
           map((clientSecret) => {
             item.client_secret = `ClientSecure_${clientSecret}`;
             return item;
@@ -47,13 +60,13 @@ export class ClientService {
           concatMap((result) => {
             return from(
               this.clientDAO.updateClientScope(
-                result.OAuthClientDetails.client_id,
+                result.client_id,
                 client.scope_ids,
               ),
             ).pipe(
               map(() => ({
-                client_id: result.OAuthClientDetails.client_id,
-                client_secret: result.OAuthClientDetails.client_secret,
+                client_id: result.client_id,
+                client_secret: result.client_secret,
               })),
             );
           }),
@@ -62,16 +75,9 @@ export class ClientService {
     );
   }
 
-  update(client: UpdateAllClientDTO) {
+  updateClient(client: UpdateAllClientDTO) {
     this.logger.info('begin to register client');
-    return from(this.clientDAO.updateClient(client)).pipe(
-      map((item) => {
-        this.logger.info('end to register client success');
-        return {
-          id: item.id,
-        };
-      }),
-    );
+    return this.clientDAO.updateClient(client);
   }
 
   listClient(queryParam: QueryParam, keyWord: string, id?: string) {
@@ -100,9 +106,9 @@ export class ClientService {
   }
 
   del(batchDel: BatchDeleteDTO) {
-    this.logger.info('begin to delete post');
+    this.logger.info('begin to delete client');
     this.logger.info('the delete ids = ', batchDel.ids);
-    return from(this.clientDAO.del(batchDel.ids)).pipe(
+    return from(this.clientDAO.delClient(batchDel.ids)).pipe(
       map(() => {
         return {};
       }),

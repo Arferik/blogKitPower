@@ -1,5 +1,6 @@
 import {
   IsArray,
+  IsBoolean,
   IsNumber,
   IsOptional,
   IsString,
@@ -9,12 +10,11 @@ import {
 export class ClientRegisterDTO {
   @IsString()
   @Length(2, 30)
-  name: string;
+  client_name: string;
   type: string;
-  client_id?: string;
   @IsString()
   @IsOptional()
-  description?: string;
+  client_id?: string;
   @IsString()
   authorized_grant_types: string;
   @IsString()
@@ -32,8 +32,8 @@ export class ClientRegisterDTO {
 }
 
 export class UpdateAllClientDTO extends ClientRegisterDTO {
-  @IsString()
-  id: string;
+  @IsBoolean()
+  is_locked: boolean;
 }
 
 export class BatchDeleteDTO {

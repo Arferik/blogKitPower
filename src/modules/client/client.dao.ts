@@ -15,30 +15,34 @@ export class ClientDAO {
   ) {}
 
   addClient(client: ClientRegisterDTO) {
-    return this.prismaService.oAuthTerminal.create({
+    return this.prismaService.oAuthClientDetails.create({
       data: {
-        name: client.name,
-        type: client.type,
-        description: client.description,
-        OAuthClientDetails: {
-          create: {
-            client_id: client.client_id,
-            client_secret: client.client_secret,
-            additional_information: '',
-            authorized_grant_types: client.authorized_grant_types,
-            web_server_redirect_uri: client.web_server_redirect_uri,
-            access_token_validity: client.access_token_validity,
-            refresh_token_validity: client.refresh_token_validity,
-          },
-        },
+        client_name: client.client_name,
+        additional_information: '',
+        client_secret: client.client_secret,
+        authorized_grant_types: client.authorized_grant_types,
+        web_server_redirect_uri: client.web_server_redirect_uri,
+        access_token_validity: client.access_token_validity,
+        refresh_token_validity: client.refresh_token_validity,
       },
       select: {
-        OAuthClientDetails: {
-          select: {
-            client_id: true,
-            client_secret: true,
-          },
-        },
+        client_id: true,
+        client_secret: true,
+      },
+    });
+  }
+
+  listScope() {
+    return this.prismaService.oAuthClientScope.findMany({});
+  }
+
+  getScopeByIds(client_id: string) {
+    return this.prismaService.oAuthClientOnScope.findMany({
+      where: {
+        client_id: client_id,
+      },
+      select: {
+        scope_id: true,
       },
     });
   }
@@ -64,27 +68,32 @@ export class ClientDAO {
   }
 
   updateClient(client: UpdateAllClientDTO) {
-    return this.prismaService.oAuthTerminal.update({
+    const delClientScope = this.delClientScope(client.client_id);
+    const updateClientScope = this.updateClientScope(
+      client.client_id,
+      client.scope_ids,
+    );
+    const updateClient = this.prismaService.oAuthClientDetails.update({
       data: {
-        name: client.name,
-        type: client.type,
-        OAuthClientDetails: {
-          connect: {
-            client_id: client.client_id,
-            authorized_grant_types: client.authorized_grant_types,
-            web_server_redirect_uri: client.web_server_redirect_uri,
-            access_token_validity: client.access_token_validity,
-            refresh_token_validity: client.refresh_token_validity,
-          },
-        },
+        client_name: client.client_name,
+        is_locked: client.is_locked,
+        authorized_grant_types: client.authorized_grant_types,
+        web_server_redirect_uri: client.web_server_redirect_uri,
+        access_token_validity: client.access_token_validity,
+        refresh_token_validity: client.refresh_token_validity,
       },
       where: {
-        id: client.id,
+        client_id: client.client_id,
       },
       select: {
-        id: true,
+        client_id: true,
       },
     });
+    return this.prismaService.$transaction([
+      delClientScope,
+      updateClientScope,
+      updateClient,
+    ]);
   }
 
   list(pagination: PaginationParam, keyWord?: string) {
@@ -94,18 +103,24 @@ export class ClientDAO {
     );
     const pageParams = this.prismaHelper.paginationParams(pagination);
     this.logger.debug('call client ,pageParams', pageParams);
-    const data = this.prismaService.oAuthTerminal.findMany({
+    const data = this.prismaService.oAuthClientDetails.findMany({
       ...pageParams,
       select: {
-        id: true,
-        name: true,
-        engine: true,
+        client_id: true,
         modified_at: true,
         is_locked: true,
-        is_online: true,
         created_at: true,
-        type: true,
-        os: true,
+        client_name: true,
+        web_server_redirect_uri: true,
+        authorized_grant_types: true,
+        access_token_validity: true,
+        refresh_token_validity: true,
+        OAuthTerminal: {
+          select: {
+            id: true,
+            is_online: true,
+          },
+        },
       },
       where: {
         ...containName,
@@ -120,36 +135,46 @@ export class ClientDAO {
   }
 
   getById(id: string) {
-    return this.prismaService.oAuthTerminal.findUnique({
+    return this.prismaService.oAuthClientDetails.findUnique({
       where: {
-        id,
+        client_id: id,
       },
       select: {
-        id: true,
-        name: true,
-        engine: true,
+        client_id: true,
+        client_name: true,
+        authorized_grant_types: true,
+        web_server_redirect_uri: true,
+        access_token_validity: true,
+        refresh_token_validity: true,
         modified_at: true,
         is_locked: true,
-        is_online: true,
+        client_secret: true,
         created_at: true,
-        type: true,
-        os: true,
-        OAuthClientDetails: {
+        scopes: {
           select: {
-            client_id: true,
-            client_secret: true,
-            scopes: true,
-            authorized_grant_types: true,
-            web_server_redirect_uri: true,
-            access_token_validity: true,
-            refresh_token_validity: true,
+            scope: true,
+          },
+        },
+        OAuthTerminal: {
+          select: {
+            id: true,
+            name: true,
+            type: true,
           },
         },
       },
     });
   }
 
-  del(delId: string[]) {
+  delClientScope(clientId: string) {
+    return this.prismaService.oAuthClientOnScope.deleteMany({
+      where: {
+        client_id: clientId,
+      },
+    });
+  }
+
+  delClient(delId: string[]) {
     const batchResult = this.prismaService.oAuthClientOnScope.deleteMany({
       where: {
         client_id: {

@@ -37,27 +37,34 @@ export class ClientController {
     return this.clientService.addClientScope(scope.name);
   }
 
+  @Message('get scope list success')
+  // @UseGuards(AuthGuard)
+  @Get('scope')
+  listScope(@Query('client_id') client_id: string) {
+    return this.clientService.listScope(client_id);
+  }
+
   @Put()
   @Message('update client success')
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   update(@Body() client: UpdateAllClientDTO) {
-    return this.clientService.update(client);
+    return this.clientService.updateClient(client);
   }
 
   @Message('get client list success')
   @Pagination()
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   @Get()
   listPost(
     @Query() queryParam: QueryParam,
-    @Query('title') postTitle: string,
+    @Query('name') clientName: string,
     @Query('id') id: string,
   ) {
-    return this.clientService.listClient(queryParam, postTitle, id);
+    return this.clientService.listClient(queryParam, clientName, id);
   }
 
   @Delete()
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   @Message('delete client success')
   del(@Body() delId: BatchDeleteDTO) {
     return this.clientService.del(delId);

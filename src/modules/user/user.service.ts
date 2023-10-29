@@ -6,6 +6,8 @@ import { Value } from '@ddboot/config';
 import { BaseException, ErrorCode } from '~/exceptions';
 import { JwtService } from '@nestjs/jwt';
 import { Pbkdf2 } from '@ddboot/secure';
+import { QueryParam } from '~/models/queryParam.dto';
+import { UpdateUserDTO } from './user.dto';
 
 @Injectable()
 export class UserService {
@@ -62,7 +64,44 @@ export class UserService {
     );
   }
 
-  listUser() {}
+  listUser(queryParam: QueryParam, keyWord: string, id?: string) {
+    this.logger.info('get User list');
+    if (id) {
+      return from(this.userDao.getUserById(id)).pipe(
+        map((item) => {
+          return {
+            data: item || [],
+          };
+        }),
+      );
+    }
+    return from(this.userDao.listUser(queryParam, keyWord)).pipe(
+      map(([data, count]) => {
+        return {
+          data,
+          total: count,
+          current: queryParam.current,
+          pageSize: queryParam.page_size,
+        };
+      }),
+    );
+  }
+
+  delBatchById({ ids }: { ids: string[] }) {
+    return from(this.userDao.delBatchById(ids)).pipe(
+      map(() => {
+        return {};
+      }),
+    );
+  }
+
+  updateUser(userInfo: UpdateUserDTO) {
+    return from(this.userDao.updateUser(userInfo)).pipe(
+      map(() => {
+        return {};
+      }),
+    );
+  }
 
   createUser(username: string, password: string) {
     return from(Pbkdf2.Key(password, this.pbkKey)).pipe(

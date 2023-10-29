@@ -126,7 +126,7 @@ export class ClientDAO {
         ...containName,
       },
     });
-    const count = this.prismaService.oAuthTerminal.count({
+    const count = this.prismaService.oAuthClientDetails.count({
       where: {
         ...containName,
       },

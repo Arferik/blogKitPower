@@ -11,7 +11,8 @@ import { CategoryCurl } from './category.interface';
 import { CategoryDTO, updateCategoryDTO } from './category.dto';
 import { Message } from '@ddboot/core';
 import { CategoryService } from './category.service';
-import { AuthGuard } from '~/guard/auth.guard';
+import { OAuthGuard } from '~/guard/oauth.guard';
+import { OAuthScope } from '~/decorator';
 
 @Controller('category')
 export class CategoryController
@@ -21,27 +22,31 @@ export class CategoryController
 
   @Get()
   @Message('get category list success')
-  @UseGuards(AuthGuard)
+  @UseGuards(OAuthGuard)
+  @OAuthScope(['admin:blog'])
   getAll() {
     return this.categoryService.getAll();
   }
 
   @Put()
   @Message('update category success')
-  @UseGuards(AuthGuard)
+  @UseGuards(OAuthGuard)
+  @OAuthScope(['admin:blog'])
   update(@Body() t: updateCategoryDTO) {
     return this.categoryService.update(t);
   }
 
   @Delete()
-  @UseGuards(AuthGuard)
+  @UseGuards(OAuthGuard)
+  @OAuthScope(['admin:blog'])
   @Message('delete category success')
   del(@Body() delId: { ids: string[] }) {
     return this.categoryService.del(delId);
   }
 
   @Post()
-  @UseGuards(AuthGuard)
+  @UseGuards(OAuthGuard)
+  @OAuthScope(['admin:blog'])
   @Message('add category success')
   add(@Body() t: CategoryDTO) {
     return this.categoryService.add(t);

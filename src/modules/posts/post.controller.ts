@@ -10,51 +10,61 @@ import {
   Delete,
 } from '@nestjs/common';
 import { PostService } from './post.service';
-import { AuthGuard } from '~/guard/auth.guard';
-import { BatchDeleteDTO, QueryParam } from '~/models/queryParam.dto';
-import { PostDTO, PostReleaseDTO, UpdatePostDTO } from './post.dto';
+import { BatchDeleteDTO, QueryParam } from '~/models';
+import { AddPostDTO, PostReleaseDTO, UpdatePostDTO } from './post.dto';
+import { ICurl } from '~/interfaces';
+import { Observable } from 'rxjs';
+import { OAuthGuard } from '~/guard/oauth.guard';
+import { OAuthScope } from '~/decorator';
 
 @Controller('post')
-export class PostController {
+export class PostController implements ICurl<AddPostDTO, UpdatePostDTO> {
   constructor(private readonly postService: PostService) {}
 
   @Message('get post list success')
   @Pagination()
-  @UseGuards(AuthGuard)
+  @UseGuards(OAuthGuard)
+  @OAuthScope(['admin:blog'])
   @Get()
-  listPost(
+  list(
     @Query() queryParam: QueryParam,
     @Query('title') postTitle: string,
     @Query('id') id: string,
-  ) {
-    return this.postService.listPost(queryParam, postTitle, id);
+  ): Observable<any> | Promise<any> {
+    return this.postService.list(queryParam, postTitle, id);
   }
 
   @Post()
-  @UseGuards(AuthGuard)
+  @UseGuards(OAuthGuard)
+  @OAuthScope(['admin:blog'])
   @Message('add post success')
-  addPost(@Body() postDTO: PostDTO) {
-    return this.postService.addPost(postDTO);
+  post(
+    @Body() addDTO: AddPostDTO,
+  ): Observable<{ id: string }> | Promise<{ id: string }> {
+    return this.postService.post(addDTO);
   }
 
   @Put()
-  @UseGuards(AuthGuard)
+  @UseGuards(OAuthGuard)
+  @OAuthScope(['admin:blog'])
   @Message('update post success')
-  update(@Body() postDTO: UpdatePostDTO) {
-    return this.postService.updatePost(postDTO);
-  }
-
-  @Put('release')
-  @UseGuards(AuthGuard)
-  @Message('release post success')
-  releasePost(@Body() postRelease: PostReleaseDTO) {
-    return this.postService.releasePost(postRelease);
+  put(@Body() updateDTO: UpdatePostDTO): Observable<{ id: string }> {
+    return this.postService.put(updateDTO);
   }
 
   @Delete()
-  @UseGuards(AuthGuard)
+  @UseGuards(OAuthGuard)
+  @OAuthScope(['admin:blog'])
   @Message('delete post success')
-  del(@Body() delId: BatchDeleteDTO) {
-    return this.postService.del(delId);
+  batchDel(batchDel: BatchDeleteDTO): Promise<object> | Observable<object> {
+    return this.postService.batchDel(batchDel);
+  }
+
+  @Put('release')
+  @UseGuards(OAuthGuard)
+  @OAuthScope(['admin:blog'])
+  @Message('release post success')
+  releasePost(@Body() postRelease: PostReleaseDTO) {
+    return this.postService.releasePost(postRelease);
   }
 }

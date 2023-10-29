@@ -14,10 +14,10 @@ import {
   ScopeDTO,
   UpdateAllClientDTO,
 } from './client.dto';
-import { AuthGuard } from '~/guard/auth.guard';
 import { ClientService } from './client.service';
 import { Message, Pagination } from '@ddboot/core';
 import { QueryParam } from '~/models/queryParam.dto';
+import { OAuthGuard } from '~/guard/oauth.guard';
 
 @Controller('client')
 export class ClientController {
@@ -25,20 +25,20 @@ export class ClientController {
 
   @Post()
   @Message('register client success')
-  // @UseGuards(AuthGuard)
+  @UseGuards(OAuthGuard)
   addClient(@Body() client: ClientRegisterDTO) {
     return this.clientService.addClient(client);
   }
 
   @Post('scope')
   @Message('add client scope success')
-  // @UseGuards(AuthGuard)
+  @UseGuards(OAuthGuard)
   addClientScope(@Body() scope: ScopeDTO) {
     return this.clientService.addClientScope(scope.name);
   }
 
   @Message('get scope list success')
-  // @UseGuards(AuthGuard)
+  @UseGuards(OAuthGuard)
   @Get('scope')
   listScope(@Query('client_id') client_id: string) {
     return this.clientService.listScope(client_id);
@@ -46,14 +46,14 @@ export class ClientController {
 
   @Put()
   @Message('update client success')
-  // @UseGuards(AuthGuard)
+  @UseGuards(OAuthGuard)
   update(@Body() client: UpdateAllClientDTO) {
     return this.clientService.updateClient(client);
   }
 
   @Message('get client list success')
   @Pagination()
-  // @UseGuards(AuthGuard)
+  @UseGuards(OAuthGuard)
   @Get()
   listPost(
     @Query() queryParam: QueryParam,
@@ -64,7 +64,7 @@ export class ClientController {
   }
 
   @Delete()
-  // @UseGuards(AuthGuard)
+  @UseGuards(OAuthGuard)
   @Message('delete client success')
   del(@Body() delId: BatchDeleteDTO) {
     return this.clientService.del(delId);

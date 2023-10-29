@@ -1,6 +1,5 @@
 import { CONFIG, ConfigService, ILogger, LOG_PROVIDER } from '@ddboot/log4js';
 import { Module } from '@nestjs/common';
-import { JwtModule } from '@nestjs/jwt';
 import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname, join } from 'path';
@@ -10,15 +9,6 @@ import { ImageDAO } from './images.dao';
 
 @Module({
   imports: [
-    JwtModule.registerAsync({
-      useFactory: async (configService: ConfigService) => {
-        const secret = configService.get<string>('jwt.key');
-        return {
-          secret,
-        };
-      },
-      inject: [CONFIG],
-    }),
     MulterModule.registerAsync({
       useFactory(config: ConfigService, logger: ILogger) {
         const uploadFile = config.get<string>('assets.base');

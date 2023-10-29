@@ -2,17 +2,21 @@ import { Log4j, Logger } from '@ddboot/log4js';
 import { PostDao } from './post.dao';
 import { Injectable } from '@nestjs/common';
 import { BatchDeleteDTO, QueryParam } from '~/models/queryParam.dto';
-import { catchError, concatMap, from, map, of } from 'rxjs';
-import { PostDTO, PostReleaseDTO, UpdatePostDTO } from './post.dto';
+import { Observable, concatMap, from, map, of } from 'rxjs';
+import { AddPostDTO, PostReleaseDTO, UpdatePostDTO } from './post.dto';
 import { BaseException, ErrorCode } from '~/exceptions';
+import { ICurl } from '~/interfaces';
 
 @Injectable()
-export class PostService {
+export class PostService implements ICurl<AddPostDTO, UpdatePostDTO> {
   @Log4j()
   private log: Logger;
   constructor(private readonly postDao: PostDao) {}
-
-  listPost(queryParam: QueryParam, keyWord: string, id?: string) {
+  list(
+    queryParam: QueryParam,
+    keyWord: string,
+    id?: string,
+  ): Observable<any> | Promise<any> {
     this.log.info('begin to query list post ');
     if (id) {
       this.log.info('[listPost]  id = ', id);
@@ -37,25 +41,27 @@ export class PostService {
     );
   }
 
-  addPost(postDTO: PostDTO) {
+  post(
+    addDTO: AddPostDTO,
+  ): Observable<{ id: string }> | Promise<{ id: string }> {
     this.log.info('begin add post');
-    this.log.debug('add post param = ', postDTO);
-    return from(this.postDao.addPost(postDTO)).pipe(
+    this.log.debug('add post param = ', addDTO);
+    return from(this.postDao.addPost(addDTO)).pipe(
       concatMap((result) => {
         if (!result.id) {
           this.log.error('add post failed');
           throw new BaseException(ErrorCode.P10000);
         }
         const postId = result.id;
-        return from(this.postDao.addPostTag(postId, postDTO.tag_ids)).pipe(
+        return from(this.postDao.addPostTag(postId, addDTO.tag_ids)).pipe(
           concatMap(() => {
-            const postImage = postDTO.images.filter((item) => item.id);
+            const postImage = addDTO.images.filter((item) => item.id);
             if (postImage.length === 0) {
               this.log.info('add post on tag success, but no image');
               return of({});
             }
             this.log.info('add post on tag success, then update image info');
-            return from(this.postDao.updatePostImage(postDTO, postId));
+            return from(this.postDao.updatePostImage(addDTO, postId));
           }),
           map(() => {
             return {
@@ -63,6 +69,24 @@ export class PostService {
             };
           }),
         );
+      }),
+    );
+  }
+
+  put(updateDTO: UpdatePostDTO): Observable<{ id: string }> {
+    return from(this.postDao.updatePost(updateDTO)).pipe(
+      map(() => ({
+        id: updateDTO.id,
+      })),
+    );
+  }
+
+  batchDel(batchDel: BatchDeleteDTO): Promise<object> | Observable<object> {
+    this.log.info('begin to delete post');
+    this.log.info('the delete ids = ', batchDel.ids);
+    return from(this.postDao.batchDel(batchDel.ids)).pipe(
+      map(() => {
+        return {};
       }),
     );
   }
@@ -76,68 +100,5 @@ export class PostService {
         };
       }),
     );
-  }
-
-  del(batchDel: BatchDeleteDTO) {
-    this.log.info('begin to delete post');
-    this.log.info('the delete ids = ', batchDel.ids);
-    return from(this.postDao.del(batchDel.ids)).pipe(
-      map(() => {
-        return {};
-      }),
-    );
-  }
-  /**
-   *   更新博客基本信息
-   *   更新博客标签
-   *   博客类别
-   *   图片
-   *
-   *
-   */
-  updatePost(postDTO: UpdatePostDTO) {
-    return this.updateBaseInfo(postDTO).pipe(
-      concatMap(() => this.updatePostTag(postDTO)),
-      concatMap(() =>
-        this.updatePostImage(postDTO).pipe(
-          catchError((e) => {
-            this.log.error('update post image failed', e);
-            return of({
-              id: postDTO.id,
-            });
-          }),
-        ),
-      ),
-      map(() => ({
-        id: postDTO.id,
-      })),
-    );
-  }
-
-  updateBaseInfo(postDTO: UpdatePostDTO) {
-    this.log.info('begin to update post base info');
-    return from(this.postDao.updatePost(postDTO)).pipe(
-      map(() => {
-        this.log.info('end update post base info success');
-        return {
-          id: postDTO.id,
-        };
-      }),
-    );
-  }
-
-  updatePostTag(postDTO: UpdatePostDTO) {
-    this.log.info('begin to update post tag');
-    return from(this.postDao.delPostTagByPostId(postDTO.id)).pipe(
-      concatMap(() => {
-        this.log.info('delete post tag success, then add post tag');
-        return from(this.postDao.addPostTag(postDTO.id, postDTO.tag_ids));
-      }),
-    );
-  }
-
-  updatePostImage(postDTO: UpdatePostDTO) {
-    this.log.info('begin to update post image');
-    return from(this.postDao.updatePostImage(postDTO, postDTO.id));
   }
 }

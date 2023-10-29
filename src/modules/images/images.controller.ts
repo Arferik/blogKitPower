@@ -14,7 +14,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { AuthGuard } from '~/guard/auth.guard';
+import { OAuthGuard } from '~/guard/oauth.guard';
 import { BatchDeleteDTO, QueryParam } from '~/models/queryParam.dto';
 
 @Controller('image')
@@ -22,7 +22,7 @@ export class ImagesController {
   constructor(private readonly imagesService: ImagesService) {}
 
   @Post('upload')
-  @UseGuards(AuthGuard)
+  @UseGuards(OAuthGuard)
   @Message('upload post image success')
   @UseInterceptors(FileInterceptor('file'))
   uploadImage(
@@ -42,14 +42,14 @@ export class ImagesController {
 
   @Message('get post image success')
   @Pagination()
-  @UseGuards(AuthGuard)
+  @UseGuards(OAuthGuard)
   @Get()
   listImage(@Query() queryParam: QueryParam, @Query('id') id: string) {
     return this.imagesService.listImg(queryParam, id);
   }
 
   @Delete()
-  @UseGuards(AuthGuard)
+  @UseGuards(OAuthGuard)
   @Message('remove image success')
   removeImage(@Body() { ids }: BatchDeleteDTO) {
     return this.imagesService.batchRemoveImage(ids);

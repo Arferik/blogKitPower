@@ -1,7 +1,7 @@
 import { PaginationParam, PrismaHelper, PrismaService } from '~/prisma';
 import { Injectable } from '@nestjs/common';
 import { Post } from '@prisma/client';
-import { PostDTO, PostReleaseDTO, UpdatePostDTO } from './post.dto';
+import { AddPostDTO, PostReleaseDTO, UpdatePostDTO } from './post.dto';
 import { Log4j, Logger } from '@ddboot/log4js';
 
 @Injectable()
@@ -112,7 +112,7 @@ export class PostDao {
     });
   }
 
-  addPost(postDTO: PostDTO) {
+  addPost(postDTO: AddPostDTO) {
     return this.prismaService.post.create({
       data: {
         title: postDTO.title,
@@ -156,7 +156,7 @@ export class PostDao {
    * @param postId
    * @returns
    */
-  updatePostImage(postDTO: PostDTO, postId: string) {
+  updatePostImage(postDTO: AddPostDTO, postId: string) {
     const updateImages = postDTO.images.map((image) => {
       return this.prismaService.image.update({
         where: {
@@ -172,7 +172,7 @@ export class PostDao {
         },
       });
     });
-    return this.prismaService.$transaction(updateImages);
+    return updateImages;
   }
 
   releasePost(postDTO: PostReleaseDTO) {
@@ -186,7 +186,7 @@ export class PostDao {
     });
   }
 
-  del(delId: string[]) {
+  batchDel(delId: string[]) {
     return this.prismaService.$transaction([
       this.prismaService.postOnTags.deleteMany({
         where: {
@@ -206,7 +206,7 @@ export class PostDao {
   }
 
   updatePost(post: UpdatePostDTO) {
-    return this.prismaService.post.update({
+    const updatePost = this.prismaService.post.update({
       where: {
         id: post.id,
       },
@@ -222,5 +222,14 @@ export class PostDao {
         },
       },
     });
+    const delPostTagByPostId = this.delPostTagByPostId(post.id);
+    const addPostTag = this.addPostTag(post.id, post.tag_ids);
+    const updatePostImage = this.updatePostImage(post, post.id);
+    return this.prismaService.$transaction([
+      updatePost,
+      delPostTagByPostId,
+      addPostTag,
+      ...updatePostImage,
+    ]);
   }
 }

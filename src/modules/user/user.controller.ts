@@ -12,17 +12,12 @@ import {
 import { UserService } from '~/modules/user/user.service';
 import { UpdateUserDTO, UserDto } from '~/modules/user/user.dto';
 import { Message, Pagination } from '@ddboot/core';
-import { AuthGuard } from '~/guard/auth.guard';
 import { Request } from 'express';
 import { BatchDeleteDTO, QueryParam } from '~/models/queryParam.dto';
+import { OAuthGuard } from '~/guard/oauth.guard';
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
-  @Post('login')
-  @Message('user login success')
-  login(@Body() user: UserDto) {
-    return this.userService.signIn(user.username, user.password);
-  }
 
   @Post('register')
   @Message('user register success')
@@ -31,7 +26,7 @@ export class UserController {
   }
 
   @Get('current')
-  @UseGuards(AuthGuard)
+  @UseGuards(OAuthGuard)
   getCurrent(@Req() request: Request) {
     const user = request['user'];
     return {
@@ -47,7 +42,7 @@ export class UserController {
 
   @Message('get user list success')
   @Pagination()
-  @UseGuards(AuthGuard)
+  @UseGuards(OAuthGuard)
   @Get()
   listPost(
     @Query() queryParam: QueryParam,
@@ -58,7 +53,7 @@ export class UserController {
   }
 
   @Delete()
-  @UseGuards(AuthGuard)
+  @UseGuards(OAuthGuard)
   @Message('delete user success')
   del(@Body() delId: BatchDeleteDTO) {
     return this.userService.delBatchById(delId);
@@ -66,7 +61,7 @@ export class UserController {
 
   @Put()
   @Message('delete user success')
-  @UseGuards(AuthGuard)
+  @UseGuards(OAuthGuard)
   updateUser(@Body() userUpdate: UpdateUserDTO) {
     this.userService.updateUser(userUpdate);
   }

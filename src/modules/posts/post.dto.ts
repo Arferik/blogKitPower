@@ -7,7 +7,7 @@ export class ImageDTO {
   type: 'COVER' | 'AVATAR' | 'POST';
 }
 
-export class PostDTO {
+export class AddPostDTO {
   @IsString()
   @Length(1, 30)
   title: string;
@@ -31,7 +31,7 @@ export class PostDTO {
   is_release: boolean;
 }
 
-export class UpdatePostDTO extends PostDTO {
+export class UpdatePostDTO extends AddPostDTO {
   @IsString()
   id: string;
 }

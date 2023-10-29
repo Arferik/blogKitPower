@@ -1,5 +1,5 @@
 import { Value } from '@ddboot/config';
-import { PaginationParam, PrismaHelper, PrismaService } from '@ddboot/prisma';
+import { PaginationParam, PrismaHelper, PrismaService } from '~/prisma';
 import { Injectable } from '@nestjs/common';
 import { Image } from '@prisma/client';
 

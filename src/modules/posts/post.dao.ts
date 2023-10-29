@@ -1,4 +1,4 @@
-import { PaginationParam, PrismaHelper, PrismaService } from '@ddboot/prisma';
+import { PaginationParam, PrismaHelper, PrismaService } from '~/prisma';
 import { Injectable } from '@nestjs/common';
 import { Post } from '@prisma/client';
 import { PostDTO, PostReleaseDTO, UpdatePostDTO } from './post.dto';

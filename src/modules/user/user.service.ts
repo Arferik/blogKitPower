@@ -3,7 +3,6 @@ import { Log4j, Logger } from '@ddboot/log4js';
 import { UserDao } from '~/modules/user/user.dao';
 import { concatMap, from, map } from 'rxjs';
 import { Value } from '@ddboot/config';
-import { getPbkdf2 } from '@ddboot/core';
 import { BaseException, ErrorCode } from '~/exceptions';
 import { JwtService } from '@nestjs/jwt';
 import { Pbkdf2 } from '@ddboot/secure';
@@ -63,8 +62,10 @@ export class UserService {
     );
   }
 
+  listUser() {}
+
   createUser(username: string, password: string) {
-    return from(getPbkdf2(password, this.pbkKey)).pipe(
+    return from(Pbkdf2.Key(password, this.pbkKey)).pipe(
       concatMap((pbk) => {
         return this.userDao.createUser$(username, pbk).pipe(
           map(() => {

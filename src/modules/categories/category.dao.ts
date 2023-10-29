@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CategoryDTO, updateCategoryDTO } from './category.dto';
 import { CategoryCurl } from './category.interface';
-import { PrismaService } from '@ddboot/prisma';
+import { PrismaService } from '~/prisma';
 
 @Injectable()
 export class CategoryDAO

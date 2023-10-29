@@ -2,7 +2,7 @@ import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { NestLoggerService } from '@ddboot/log4js';
-import { PrismaClientExceptionFilter } from '@ddboot/prisma';
+import { PrismaClientExceptionFilter } from '~/prisma';
 import { BaseErrorExceptionFilter, BaseException } from './exceptions';
 import { OAuthErrorExceptionFilter } from './exceptions/oauthError.filter';
 

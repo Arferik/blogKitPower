@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@ddboot/prisma';
+import { PrismaService } from '~/prisma';
 import { TagDTO, UpdateTagDTO } from './tag.dto';
 import { TAGCurl } from './tag.interface';
 

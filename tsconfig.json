@@ -20,13 +20,7 @@
     "paths": {
       "~/*": [
         "./src/*"
-      ],
-      "@ddboot/prisma": [
-        "libs/prisma/src"
-      ],
-      "@ddboot/prisma/*": [
-        "libs/prisma/src/*"
-      ],
+      ]
     }
   }
 }

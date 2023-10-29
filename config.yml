@@ -2,7 +2,7 @@ name: nico
 version: 0.0.1
 port: 3000
 log:
-  level: debug
+  level: info
   path: logs
   name: Nico
   console: true

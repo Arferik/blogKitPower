@@ -24,14 +24,17 @@ export class OAuthGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const oAuthScope = this.reflector.get(OAuthScope, context.getHandler());
     this.logger.debug('Begin to check oauth token');
-    await this.oAuthService.authenticate(
+
+    const token = await this.oAuthService.authenticate(
       new OAuRequest(request),
       new OAuResponse({}),
       {
         scope: oAuthScope,
       },
     );
-    this.logger.debug('End to check oauth token');
+
+    request['user'] = token.user;
+    this.logger.debug('End to check oauth token', token.user.username);
     return true;
   }
 }

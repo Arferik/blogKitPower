@@ -11,7 +11,7 @@ import { TagModule } from './modules/tags/tag.module';
 import { ImagesModule } from './modules/images/images.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { CacheModule } from '@nestjs/cache-manager';
-import { redisStore } from 'cache-manager-redis-yet';
+import * as redisStore from 'cache-manager-redis-yet';
 import {
   HttpLoggerInterceptor,
   ResponseTransformInterceptor,
@@ -48,9 +48,12 @@ import { ClientModule } from './modules/client/client.module';
         }
         logger
           .getLogger(CacheModule.name)
-          .info('redis host is configed, use redis store');
+          .info(
+            'redis host is from config.yaml, use redis store the host ip is %s',
+            config.get<string>('redis.host'),
+          );
         return {
-          store: redisStore,
+          store: redisStore.redisStore,
           isGlobal: true,
           host: config.get<string>('redis.host'),
           port: config.get<number>('redis.port'),

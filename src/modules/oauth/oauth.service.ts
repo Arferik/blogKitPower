@@ -17,23 +17,17 @@ export class OAuthService extends OAuth2Server {
     });
   }
 
-  async oauthToken(
-    request: Request,
-    response: Response,
-    options?: TokenOptions,
-  ) {
+  async oauthToken(request: Request, options?: TokenOptions) {
     const token = await this.token(
       new OAURequest(request),
-      new OAUResponse(response),
+      new OAUResponse({}),
       options,
     );
-    return response
-      .json({
-        access_token: token.accessToken,
-        token_type: token.tokenType,
-        expires_in: token.accessTokenExpiresAt,
-        refresh_token: token.refreshToken,
-      })
-      .status(200);
+    return {
+      access_token: token.accessToken,
+      token_type: 'Bearer',
+      expires_in: token.client.accessTokenLifetime,
+      refresh_token: token.refreshToken,
+    };
   }
 }

@@ -48,12 +48,26 @@ export class OAuthModel
     client: Client,
     scope: string[],
   ): Promise<Falsey | string[]> {
+    this.log.info('begin to validate scope >>>>');
+    this.log.info(
+      'user = %s',
+      user,
+      'client.scope = ',
+      client.scopes,
+      'scope =',
+      scope,
+    );
+    if (!scope) {
+      this.log.error('scope is empty');
+      return false;
+    }
     const checkResult = scope.every(
       (evScope) => client.scopes.indexOf(evScope) >= 0,
     );
     if (!checkResult) {
       return false;
     }
+    this.log.info('end to validate scope <<<<<');
     return scope;
   }
 
@@ -96,7 +110,7 @@ export class OAuthModel
       redirectUris: clientInfo.web_server_redirect_uri.split(',') || [],
       accessTokenLifetime: clientInfo.access_token_validity,
       refreshTokenLifetime: clientInfo.refresh_token_validity,
-      scopes: clientInfo.scopes.map((item) => item.scope),
+      scopes: clientInfo.scopes.map((item) => item.scope.scope),
     };
   }
 
@@ -106,9 +120,14 @@ export class OAuthModel
     user: User,
   ): Promise<Falsey | Token> {
     this.log.info('begin to save token >>>>');
+    const accessToken = {
+      ...token,
+      client,
+      user,
+    };
     await this.cache.set(
       `oauth:access:${token.accessToken}`,
-      token,
+      accessToken,
       client.accessTokenLifetime * 1000 || 0,
     );
     this.log.debug('accessTokenLifetime = %s', client.accessTokenLifetime);
@@ -117,7 +136,7 @@ export class OAuthModel
       this.log.info('begin save refresh token');
       await this.cache.set(
         `oauth:refresh:${token.refreshToken}`,
-        token,
+        accessToken,
         client.refreshTokenLifetime * 1000 || 0,
       );
       this.log.debug('refreshTokenLifetime = %s', client.refreshTokenLifetime);
@@ -141,7 +160,7 @@ export class OAuthModel
       this.log.error('access token is not found');
       return false;
     }
-    this.log.info('end to get access token <<<<<');
+    this.log.info('end to get access token <<<<<', dbAccessToken);
     return dbAccessToken;
   }
 

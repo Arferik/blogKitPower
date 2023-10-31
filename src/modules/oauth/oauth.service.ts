@@ -5,7 +5,7 @@ import {
   TokenOptions,
 } from '@node-oauth/oauth2-server';
 import { OAuthModel } from './oauth.model';
-import { Request, Response } from 'express';
+import { Request } from 'express';
 import * as OAuth2Server from '@node-oauth/oauth2-server';
 
 @Injectable()

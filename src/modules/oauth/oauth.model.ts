@@ -65,6 +65,11 @@ export class OAuthModel
       (evScope) => client.scopes.indexOf(evScope) >= 0,
     );
     if (!checkResult) {
+      this.log.error(
+        'scope is not match, the scope is %s , client scope is %s',
+        scope,
+        client.scopes,
+      );
       return false;
     }
     this.log.info('end to validate scope <<<<<');

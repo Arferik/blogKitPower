@@ -10,7 +10,7 @@ import { CategoryModule } from './modules/categories/category.module';
 import { TagModule } from './modules/tags/tag.module';
 import { ImagesModule } from './modules/images/images.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
-import { CacheModule } from '@nestjs/cache-manager';
+import { CacheModule, CacheStore } from '@nestjs/cache-manager';
 import * as redisStore from 'cache-manager-redis-yet';
 import {
   HttpLoggerInterceptor,
@@ -52,11 +52,12 @@ import { ClientModule } from './modules/client/client.module';
             'redis host is from config.yaml, use redis store the host ip is %s',
             config.get<string>('redis.host'),
           );
+
         return {
-          store: redisStore.redisStore,
+          store: redisStore as unknown as CacheStore,
+          host: '127.0.0.1',
+          port: 6379,
           isGlobal: true,
-          host: config.get<string>('redis.host'),
-          port: config.get<number>('redis.port'),
         };
       },
     }),

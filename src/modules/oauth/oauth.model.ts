@@ -165,6 +165,9 @@ export class OAuthModel
       this.log.error('access token is not found');
       return false;
     }
+    dbAccessToken.accessTokenExpiresAt = new Date(
+      dbAccessToken.accessTokenExpiresAt,
+    );
     this.log.info('end to get access token <<<<<', dbAccessToken);
     return dbAccessToken;
   }
@@ -230,6 +233,9 @@ export class OAuthModel
       this.log.error('refresh token is not found');
       return false;
     }
+    dbAccessToken.refreshTokenExpiresAt = new Date(
+      dbAccessToken.refreshTokenExpiresAt,
+    );
     this.log.info('end to get refresh token <<<<<');
     return dbAccessToken;
   }
@@ -240,7 +246,6 @@ export class OAuthModel
     await this.cache.del(`oauth:access:${token.accessToken}`);
     await this.cache.del(`oauth:refresh:${token.refreshToken}`);
     this.log.info('end to revoke token <<<<<');
-
     return true;
   }
 }

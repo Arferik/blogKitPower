@@ -56,7 +56,9 @@ export class PostController implements ICurl<AddPostDTO, UpdatePostDTO> {
   @UseGuards(OAuthGuard)
   @OAuthScope(['admin:blog'])
   @Message('delete post success')
-  batchDel(batchDel: BatchDeleteDTO): Promise<object> | Observable<object> {
+  batchDel(
+    @Body() batchDel: BatchDeleteDTO,
+  ): Promise<object> | Observable<object> {
     return this.postService.batchDel(batchDel);
   }
 

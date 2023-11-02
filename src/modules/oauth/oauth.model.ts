@@ -136,7 +136,6 @@ export class OAuthModel
       client.accessTokenLifetime * 1000 || 0,
     );
     this.log.debug('accessTokenLifetime = %s', client.accessTokenLifetime);
-    await this.cache.set('oauth:token:client', client.id);
     if (token.refreshToken) {
       this.log.info('begin save refresh token');
       await this.cache.set(

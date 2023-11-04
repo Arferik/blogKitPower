@@ -19,12 +19,6 @@ import { OAuthGuard } from '~/guard/oauth.guard';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post('register')
-  @Message('user register success')
-  register(@Body() user: UserDto) {
-    return this.userService.createUser(user.username, user.password);
-  }
-
   @Get('current')
   @UseGuards(OAuthGuard)
   getCurrent(@Req() request: Request) {
@@ -37,7 +31,7 @@ export class UserController {
   @Post()
   @Message('user add success')
   userAdd(@Body() user: UserDto) {
-    return this.userService.createUser(user.username, user.password);
+    return this.userService.createUser(user);
   }
 
   @Message('get user list success')
@@ -46,10 +40,16 @@ export class UserController {
   @Get()
   listPost(
     @Query() queryParam: QueryParam,
-    @Query('title') postTitle: string,
+    @Query('name') name: string,
     @Query('id') id: string,
+    @Query('email') email: string,
+    @Query('username') username: string,
   ) {
-    return this.userService.listUser(queryParam, postTitle, id);
+    return this.userService.listUser(queryParam, name, {
+      id,
+      email,
+      username,
+    });
   }
 
   @Delete()

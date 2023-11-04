@@ -167,7 +167,8 @@ export class OAuthModel
     dbAccessToken.accessTokenExpiresAt = new Date(
       dbAccessToken.accessTokenExpiresAt,
     );
-    this.log.info('end to get access token <<<<<', dbAccessToken);
+    this.log.debug('dbAccessToken', dbAccessToken);
+    this.log.info('end to get access token <<<<<');
     return dbAccessToken;
   }
 

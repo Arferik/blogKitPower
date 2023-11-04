@@ -5,7 +5,7 @@ import { concatMap, from, map } from 'rxjs';
 import { Value } from '@ddboot/config';
 import { Pbkdf2 } from '@ddboot/secure';
 import { QueryParam } from '~/models/queryParam.dto';
-import { UpdateUserDTO } from './user.dto';
+import { UpdateUserDTO, UserDto } from './user.dto';
 
 @Injectable()
 export class UserService {
@@ -17,17 +17,42 @@ export class UserService {
 
   constructor(private readonly userDao: UserDao) {}
 
-  listUser(queryParam: QueryParam, keyWord: string, id?: string) {
-    this.logger.info('get User list');
-    if (id) {
-      return from(this.userDao.getUserById(id)).pipe(
+  listUser(
+    queryParam: QueryParam,
+    keyWord: string,
+    user: Partial<UserDto> = null,
+  ) {
+    if (user.id) {
+      this.logger.info('get User by id');
+      return from(this.userDao.getUserById(user.id)).pipe(
         map((item) => {
           return {
-            data: item || [],
+            data: item || {},
           };
         }),
       );
     }
+    if (user.email) {
+      this.logger.info('get User by email');
+      return from(this.userDao.getUserByEmail(user.email)).pipe(
+        map((item) => {
+          return {
+            data: item || {},
+          };
+        }),
+      );
+    }
+    if (user.username) {
+      this.logger.info('get User by username');
+      return from(this.userDao.getUserByName(user.username)).pipe(
+        map((item) => {
+          return {
+            data: item || {},
+          };
+        }),
+      );
+    }
+    this.logger.info('get User list');
     return from(this.userDao.listUser(queryParam, keyWord)).pipe(
       map(([data, count]) => {
         return {
@@ -56,14 +81,19 @@ export class UserService {
     );
   }
 
-  createUser(username: string, password: string) {
-    return from(Pbkdf2.Key(password, this.pbkKey)).pipe(
+  createUser(user: UserDto) {
+    return from(Pbkdf2.Key(user.password, this.pbkKey)).pipe(
       concatMap((pbk) => {
-        return this.userDao.createUser$(username, pbk).pipe(
-          map(() => {
-            return {};
-          }),
-        );
+        return this.userDao
+          .createUser$({
+            ...user,
+            password: pbk,
+          })
+          .pipe(
+            map(() => {
+              return {};
+            }),
+          );
       }),
     );
   }

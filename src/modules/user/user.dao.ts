@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { PaginationParam, PrismaHelper, PrismaService } from '~/prisma';
-import { from, of } from 'rxjs';
+import { from } from 'rxjs';
 import { User } from '@prisma/client';
 import { Log4j, Logger } from '@ddboot/log4js';
-import { UpdateUserDTO } from './user.dto';
+import { UpdateUserDTO, UserDto } from './user.dto';
 
 @Injectable()
 export class UserDao {
@@ -13,23 +13,6 @@ export class UserDao {
     private readonly prismaService: PrismaService,
     private readonly prismaHelper: PrismaHelper,
   ) {}
-
-  getUserByName$(name: string) {
-    if (name === 'admin') {
-      return of({
-        id: 'admin_a',
-        username: 'admin',
-        password: 'admin',
-      });
-    }
-    return from(
-      this.prismaService.user.findFirst({
-        where: {
-          username: name,
-        },
-      }),
-    );
-  }
 
   /**
    *  用户列表
@@ -63,6 +46,22 @@ export class UserDao {
     return this.prismaService.$transaction([data, count]);
   }
 
+  getUserByEmail(email: string) {
+    return this.prismaService.user.findUnique({
+      where: {
+        email: email,
+      },
+    });
+  }
+
+  getUserByName(username: string) {
+    return this.prismaService.user.findUnique({
+      where: {
+        username: username,
+      },
+    });
+  }
+
   getUserById(id: string) {
     return this.prismaService.user.findUnique({
       where: {
@@ -75,6 +74,7 @@ export class UserDao {
         enable: true,
         created_at: true,
         modified_at: true,
+        email: true,
       },
     });
   }
@@ -91,12 +91,11 @@ export class UserDao {
     });
   }
 
-  createUser$(name: string, password: string) {
+  createUser$(user: UserDto) {
     return from(
       this.prismaService.user.create({
         data: {
-          username: name,
-          password: password,
+          ...user,
         },
       }),
     );

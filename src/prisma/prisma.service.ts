@@ -11,6 +11,8 @@ import {
   PrismaUpdateOptionMiddleware,
 } from './prisma.middleware';
 import { PRISMA_OPTIONS } from './prisma.constant';
+import { Aes256CBC } from '@ddboot/secure';
+import { Value } from '@ddboot/config';
 
 @Injectable()
 export class PrismaService
@@ -24,6 +26,9 @@ export class PrismaService
   private logList: any;
   private logListFlag: boolean;
 
+  @Value('crypto.saltKey')
+  private saltKey: string;
+
   constructor(
     @Inject(PRISMA_OPTIONS) private readonly database: any,
     @InjectLogger() private readonly logger: ILogger,
@@ -34,7 +39,6 @@ export class PrismaService
     });
 
     this.LOG = this.logger.getLogger(PrismaService.name);
-    this.initDataBase();
   }
 
   initDataBase() {
@@ -42,6 +46,7 @@ export class PrismaService
   }
 
   async onModuleInit() {
+    this.initDataBase();
     this.LOG.debug('db connect url =', process.env.DATABASE_URL);
     await this.$connect();
     const performanceMiddleware = PrismaPerformanceLogMiddleware(this.LOG);
@@ -58,11 +63,13 @@ export class PrismaService
 
   generateDatabaseUrl(dataBase: any) {
     const { host, user, password, type, port, database } = dataBase;
+    //将加密的密码解密
+    const originPass = Aes256CBC.Decrypt(password, this.saltKey);
     if (type === 'postgresql') {
-      return `postgresql://${user}:${password}@${host}:${port}/${database}?schema=public`;
+      return `postgresql://${user}:${originPass}@${host}:${port}/${database}?schema=public`;
     }
     if (type === 'mysql') {
-      return `mysql://${user}:${password}@${host}:${port}/${database}`;
+      return `mysql://${user}:${originPass}@${host}:${port}/${database}`;
     }
     return `file:./${database}`;
   }

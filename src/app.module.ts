@@ -10,8 +10,7 @@ import { CategoryModule } from './modules/categories/category.module';
 import { TagModule } from './modules/tags/tag.module';
 import { ImagesModule } from './modules/images/images.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
-import { CacheModule, CacheStore } from '@nestjs/cache-manager';
-import { redisStore } from 'cache-manager-redis-yet';
+
 import {
   HttpLoggerInterceptor,
   ResponseTransformInterceptor,
@@ -30,12 +29,6 @@ import { ClientModule } from './modules/client/client.module';
     }),
     OAuthModule,
     ClientModule,
-    CacheModule.register({
-      store: redisStore as unknown as CacheStore,
-      host: '127.0.0.1',
-      port: 6379,
-      isGlobal: true,
-    }),
     UserModule,
     PostModule,
     CategoryModule,

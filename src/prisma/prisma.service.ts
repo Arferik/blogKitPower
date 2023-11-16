@@ -12,7 +12,7 @@ import {
 } from './prisma.middleware';
 import { PRISMA_OPTIONS } from './prisma.constant';
 import { Aes256CBC } from '@ddboot/secure';
-import { Value } from '@ddboot/config';
+import { CONFIG, ConfigService, Value } from '@ddboot/config';
 
 @Injectable()
 export class PrismaService
@@ -26,19 +26,17 @@ export class PrismaService
   private logList: any;
   private logListFlag: boolean;
 
-  @Value('crypto.saltKey')
-  private saltKey: string;
-
   constructor(
     @Inject(PRISMA_OPTIONS) private readonly database: any,
     @InjectLogger() private readonly logger: ILogger,
+    @Inject(CONFIG) private readonly configService: ConfigService,
   ) {
     super({
       log: [{ emit: 'event', level: 'query' }],
       errorFormat: 'colorless',
     });
-
     this.LOG = this.logger.getLogger(PrismaService.name);
+    this.initDataBase();
   }
 
   initDataBase() {
@@ -46,8 +44,7 @@ export class PrismaService
   }
 
   async onModuleInit() {
-    this.initDataBase();
-    this.LOG.debug('db connect url =', process.env.DATABASE_URL);
+    this.LOG.debug('db connect url  =', process.env.DATABASE_URL);
     await this.$connect();
     const performanceMiddleware = PrismaPerformanceLogMiddleware(this.LOG);
     this.$use(PrismaUpdateOptionMiddleware);
@@ -63,8 +60,9 @@ export class PrismaService
 
   generateDatabaseUrl(dataBase: any) {
     const { host, user, password, type, port, database } = dataBase;
+    const saltKey = this.configService.get<string>('crypto.saltKey', '');
     //将加密的密码解密
-    const originPass = Aes256CBC.Decrypt(password, this.saltKey);
+    const originPass = Aes256CBC.Decrypt(password, saltKey);
     if (type === 'postgresql') {
       return `postgresql://${user}:${originPass}@${host}:${port}/${database}?schema=public`;
     }

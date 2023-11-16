@@ -22,4 +22,4 @@ USER nico
 
 EXPOSE 3000
 
-CMD ["node", "./index.js"]
+CMD ["/bin/sh", "-c", "node ./index.js > /app/logs/start.log 2>&1"]

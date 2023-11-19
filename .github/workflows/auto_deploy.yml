@@ -11,19 +11,6 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: "20.x"
-      - name: install dependencies
-        id: hello
-        run: npm install
-      - name: cp .env
-        run: cp .env.sample .env
-      - name:  run prisma generate
-        run: npx prisma generate
-      - name: build
-        run: npm run build
-      - name: build:bundle
-        run: npm run build:bundle
-      # - name: docker build
-      #   run: docker build -t niko .
       - name: Publish to Docker hub
         uses: docker/build-push-action@v2
         with:

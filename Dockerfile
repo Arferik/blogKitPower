@@ -13,9 +13,9 @@ RUN mkdir -p /app/data
 RUN chown -R nico:dmc /app/logs
 
 # 拷贝文件
-COPY --chown=nico:dmc /bundle/schema.prisma ./
-COPY --chown=nico:dmc /bundle/index.js ./
-COPY --chown=nico:dmc /bundle/client/*.node ./
+COPY --chown=nico:dmc ./bundle/schema.prisma ./
+COPY --chown=nico:dmc ./bundle/index.js ./
+COPY --chown=nico:dmc ./bundle/client/*.node ./
 
 
 USER nico

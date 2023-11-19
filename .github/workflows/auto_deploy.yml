@@ -15,7 +15,7 @@ jobs:
         id: hello
         run: npm install
       - name: cp .env
-        run: cp .env.example .env
+        run: cp .env.sample .env
       - name:  run prisma generate
         run: npx prisma generate
       - name: build

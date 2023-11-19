@@ -22,10 +22,10 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-RUN pnpm run build
+RUN yarn run build
 RUN cp .env.sample .env
-RUN pnpm prisma generate
-RUN pnpm run build:bundle
+RUN yarn prisma generate
+RUN yarn run build:bundle
 
 
 FROM base AS runner

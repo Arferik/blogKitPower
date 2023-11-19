@@ -22,8 +22,8 @@ jobs:
         run: npm run build
       - name: build:bundle
         run: npm run build:bundle
-      - name: docker build
-        run: docker build -t niko .
+      # - name: docker build
+      #   run: docker build -t niko .
       - name: Publish to Docker hub
         uses: docker/build-push-action@v2
         with:

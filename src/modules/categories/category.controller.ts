@@ -22,8 +22,6 @@ export class CategoryController
 
   @Get()
   @Message('get category list success')
-  @UseGuards(OAuthGuard)
-  @OAuthScope(['admin:blog'])
   getAll() {
     return this.categoryService.getAll();
   }

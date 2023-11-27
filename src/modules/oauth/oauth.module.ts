@@ -12,19 +12,27 @@ import { Aes256CBC } from '@ddboot/secure';
     CacheModule.registerAsync({
       inject: [CONFIG],
       useFactory: async (config: ConfigService) => {
+        const redis = config.get<any>('redis');
+        if (
+          redis.password === undefined ||
+          redis.password === null ||
+          redis.password === ''
+        ) {
+          return {
+            store: await redisStore({
+              url: `redis://${redis.host}:${redis.port}`,
+            }),
+          };
+        }
         const originPass = Aes256CBC.Decrypt(
-          config.get('redis.password'),
+          redis.password,
           config.get('crypto.saltKey', ''),
         );
-
-        let url = `redis://:${originPass}@${config.get(
-          'redis.host',
-        )}:${config.get('redis.port')}`;
-        const redisUser = config.get('redis.user');
-        if (redisUser) {
-          url = `redis://${redisUser}:${originPass}@${config.get(
-            'redis.host',
-          )}:${config.get('redis.port')}`;
+        let url = `redis://:${originPass}@${redis.host},
+        )}:${redis.port}`;
+        if (redis.user) {
+          url = `redis://${redis.user}:${originPass}@${redis.host},
+          )}:${redis.port}`;
         }
 
         return {

@@ -34,6 +34,18 @@ export class PostController implements ICurl<AddPostDTO, UpdatePostDTO> {
     return this.postService.list(queryParam, postTitle, id);
   }
 
+  /**
+   * 获取最新的20篇文章
+   * @param addDTO
+   * @returns
+   */
+
+  @Get('latest')
+  @Message('get latest post list success')
+  latestPost(): Observable<any> | Promise<any> {
+    return this.postService.latestPost();
+  }
+
   @Post()
   @UseGuards(OAuthGuard)
   @OAuthScope(['admin:blog'])

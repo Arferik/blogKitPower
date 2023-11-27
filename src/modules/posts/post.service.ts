@@ -101,4 +101,17 @@ export class PostService implements ICurl<AddPostDTO, UpdatePostDTO> {
       }),
     );
   }
+
+  latestPost() {
+    this.log.info('begin to get latest post');
+    return from(this.postDao.latestPost()).pipe(
+      map((postResult) => {
+        return postResult.map((post) => ({
+          ...post,
+          cover: post.images[0]?.url || '',
+          tags: post.tags.map((tag) => tag.tag.name),
+        }));
+      }),
+    );
+  }
 }

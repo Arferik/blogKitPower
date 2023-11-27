@@ -232,4 +232,41 @@ export class PostDao {
       ...updatePostImage,
     ]);
   }
+
+  latestPost() {
+    return this.prismaService.post.findMany({
+      take: 20,
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        images: {
+          select: {
+            url: true,
+            id: true,
+          },
+          where: {
+            type: 'COVER',
+          },
+        },
+        tags: {
+          select: {
+            tag: {
+              select: {
+                name: true,
+                id: true,
+              },
+            },
+          },
+        },
+        created_at: true,
+      },
+      where: {
+        is_release: true,
+      },
+      orderBy: {
+        created_at: 'desc',
+      },
+    });
+  }
 }

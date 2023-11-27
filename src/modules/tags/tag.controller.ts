@@ -20,8 +20,6 @@ export class TagController implements TAGCurl<TagDTO, UpdateTagDTO> {
 
   @Get()
   @Message('get tag list success')
-  @UseGuards(OAuthGuard)
-  @OAuthScope(['admin:blog'])
   getAll() {
     return this.tagService.getAll();
   }

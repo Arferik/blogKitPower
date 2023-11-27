@@ -9,16 +9,17 @@ database:
   host: 127.0.0.1
   port: 5432
   user: postgres
-  password: 123456
+  password: a978f8c9c8d812c48803642adccfe2fc:vPK5LUzWAKTNKbeQNy3MrQ==
   database: nico_blog
 assets:
   base: public
   img:
     path: images
-    server_prefix: 'http://127.0.0.1:3000/images'
+    server_prefix: http://127.0.0.1:3000/images
 crypto:
   pbk: qzBra0aKNgqxL6mmCtH7IxJXd9IYjhnb
   saltKey: qzBra0aKNgqxL6mmCtH7IxJXd9IYjhnb
 redis:
   host: 127.0.0.1
   port: 6379
+  password: 
